@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="OmokGame:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/OmokGame_jar</output-path>
+    <root id="archive" name="OmokGame.jar">
+      <element id="module-output" name="OmokGame" />
+    </root>
+  </artifact>
+</component>
