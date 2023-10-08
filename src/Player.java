@@ -30,15 +30,6 @@ public class Player {
         this.playerType = playerType;
     }
 
-    private int[] makeComputerMove(Board board) {
-        // Algorithm for computer player
-        Random random = new Random();
-        int x,y;
-        x = random.nextInt(board.boardSize)+1;
-        y = random.nextInt(board.boardSize)+1;
-        return new int[]{x,y};
-    }
-
     public String makeMove(Board board) {
         int[] moves = makeMovePlayerComputer(board);
         String s = Integer.toString(moves[0], board.boardSize+1) + " " + Integer.toString(moves[1], board.boardSize+1);
