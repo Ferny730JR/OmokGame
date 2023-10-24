@@ -8,29 +8,47 @@ import java.util.Arrays;
  * bottom-right intersection is represented by the indices (n-1, n-1).
  */
 public class Board {
+    char[][] board;
+    private final int size;
 
     /** Create a new board of the default size. */
     public Board() {
+        this(15);
     }
 
     /** Create a new board of the specified size. */
     public Board(int size) {
+        this.size = size;
+        this.board = new char[this.size][this.size];
+        for(char[] row : board) {
+            Arrays.fill(row,'\u2022');
+        }
     }
 
     /** Return the size of this board. */
     public int size() {
+        return size;
     }
 
     /** Removes all the stones placed on the board, effectively
      * resetting the board to its original state.
      */
     public void clear() {
+        for(char[] row : board) {
+            Arrays.fill(row, '\u2022');
+        }
     }
 
     /** Return a boolean value indicating whether all the places
      * on the board are occupied or not.
      */
     public boolean isFull() {
+        for(char[] row : board) {
+            for (char element : row) {
+                if (element == '•') return false; // if it has an empty spot, it is not full
+            }
+        }
+        return true;
     }
 
     /**
@@ -42,6 +60,7 @@ public class Board {
      * @param player Player whose stone is to be placed
      */
     public void placeStone(int x, int y, Player player) {
+        board[x][y] = player.getPlayerPiece();
     }
 
     /**
@@ -52,6 +71,12 @@ public class Board {
      * @param y 0-based row (horizontal) index
      */
     public boolean isEmpty(int x, int y) {
+        for(char[] row : board) {
+            for (char element : row) {
+                if (element != '•') return false; // if it does not have an empty spot, it is empty
+            }
+        }
+        return true;
     }
 
     /**
@@ -61,10 +86,11 @@ public class Board {
      * @param y 0-based row (horizontal) index
      */
     public boolean isOccupied(int x, int y) {
+        return board[x][y]!='•';
     }
 
     /**
-     * Rreturn a boolean value indicating whether the specified
+     * Return a boolean value indicating whether the specified
      * intersection (x, y) on the board is occupied by the given
      * player or not.
      *
@@ -72,6 +98,7 @@ public class Board {
      * @param y 0-based row (horizontal) index
      */
     public boolean isOccupiedBy(int x, int y, Player player) {
+        return board[x][y]==player.getPlayerPiece();
     }
 
     /**
@@ -82,6 +109,7 @@ public class Board {
      * @param y 0-based row (horizontal) index
      */
     public Player playerAt(int x, int y) {
+        return null;
     }
 
     /**

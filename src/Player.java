@@ -1,20 +1,20 @@
 import java.util.Random;
 
 public class Player {
-    private final String playerName;
+    private final String name;
     private final char playerPiece;
     private int playerType;
 
     // Constructor
-    public Player(int playerType, String playerName, char playerPiece) {
+    public Player(int playerType, String name, char playerPiece) {
         setPlayerType(playerType);
-        this.playerName = playerName;
+        this.name = name;
         this.playerPiece = playerPiece;
     }
 
     // Getter
-    public String getPlayerName() {
-        return playerName;
+    public String getName() {
+        return name;
     }
 
     public char getPlayerPiece() {

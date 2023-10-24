@@ -62,7 +62,7 @@ public class ConsoleUI {
     public String selectNextMove(Player player) {
         if(player.getPlayerType() == 2)
             return player.makeMove(board);
-        System.out.printf("%s's turn!\n",player.getPlayerName());
+        System.out.printf("%s's turn!\n",player.getName());
         System.out.print("Select your move (x y): ");
         return scanner.nextLine();
     }

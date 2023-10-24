@@ -58,7 +58,7 @@ public class Controller {
             omokConsole.displayMessage("It's a tie!");
         } else {
             omokConsole.displayBoard(board.getBoard());
-            omokConsole.displayMessage(currentPlayer.getPlayerName() + " has won the game!");
+            omokConsole.displayMessage(currentPlayer.getName() + " has won the game!");
         }
     }
 
