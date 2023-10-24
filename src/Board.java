@@ -16,12 +16,12 @@ public class Board {
     private final int size;
 
     /** Create a new board of the default size. */
-    public Board() {
+    public Board() throws NegativeArraySizeException {
         this(15);
     }
 
     /** Create a new board of the specified size. */
-    public Board(int size) {
+    public Board(int size) throws NegativeArraySizeException {
         this.size = size;
         this.board = new Player[this.size][this.size];
         for(Player[] row : board) {
