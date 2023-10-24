@@ -24,9 +24,9 @@ public class Board {
     public Board(int size) throws NegativeArraySizeException {
         this.size = size;
         this.board = new Player[this.size][this.size];
-        for(Player[] row : board) {
-            Arrays.fill(row,null);
-        }
+        //for(Player[] row : board) {
+        //    Arrays.fill(row,null);
+        //}
     }
 
     /** Return the size of this board. */

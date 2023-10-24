@@ -2,14 +2,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
 
-//    @BeforeEach
-//    void setUp() {
-//        board = new Board();
-//    }
+    private Board board;
+    @BeforeEach
+    void setUp() {
+        board = new Board();
+    }
 
     /* Test size() method */
     @Test
@@ -18,23 +21,24 @@ class BoardTest {
         assertEquals(0,board.size());
     }
 
-//    @Test
-//    void testSize2() {
-//        Board board = new Board(Integer.MAX_VALUE);
-//        assertEquals(Integer.MAX_VALUE,board.size());
-//    }
-
     @Test
-    void testSize3() {
+    void testSize2() {
         Board board = new Board(0);
         assertEquals(0,board.size());
     }
 
-//    @Test
-//    void testSize4() {
-//        Board board = new Board(Integer.MIN_VALUE);
-//        assertEquals(Integer.MIN_VALUE,board.size());
-//    }
+    @Test
+    void testSize3() {
+        Board board = new Board(70/3);
+        assertEquals(23,board.size());
+    }
+
+    @Test
+    void testSize4() {
+        assertThrows(NegativeArraySizeException.class, () -> {
+            new Board(Integer.MIN_VALUE).size();
+        });
+    }
 
     @Test
     void testSize5() {
@@ -43,15 +47,50 @@ class BoardTest {
         });
     }
 
-    @Test
-    void testSize6() {
-        Board board = new Board(70/3);
-        assertEquals(23,board.size());
-    }
-
     /* Test clear() */
     @Test
-    void testClear() {
+    void testClear1() {
+        board.clear(); // clear on empty board
+        assertTrue(Arrays.deepEquals(new Player[15][15],board.board));
+    }
+
+    @Test
+    void testClear2() {
+        // board has one stone
+        board.placeStone(0,0,new Player("",' '));
+        // Clear board
+        board.clear();
+        assertTrue(Arrays.deepEquals(new Player[15][15],board.board));
+    }
+
+    @Test
+    void testClear3() {
+        // board is full
+        for(Player[] row : board.board) {
+            Arrays.fill(row,new Player("",' '));
+        }
+        // Clear board
+        board.clear();
+        assertTrue(Arrays.deepEquals(new Player[15][15],board.board));
+    }
+
+    @Test
+    void testClear4() {
+        board = new Board(1); // full board of size 1
+        board.placeStone(0,0,new Player("",' '));
+        board.clear(); // Clear board
+        assertTrue(Arrays.deepEquals(new Player[1][1],board.board));
+    }
+
+    @Test
+    void testClear5() {
+        // large omok board is full
+        board = new Board(10000);
+        for(Player[] row : board.board) {
+            Arrays.fill(row,new Player("",' '));
+        }
+        board.clear();
+        assertTrue(Arrays.deepEquals(new Player[10000][10000],board.board));
     }
 
     /* Test isFull() */
