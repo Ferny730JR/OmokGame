@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -117,15 +118,36 @@ public class Board {
      * a horizontal, vertical, or diagonal direction.
      */
     public boolean isWonBy(Player player) {
+        Iterable<Place> winner = winningRow();
+        if(!winner.iterator().hasNext()) {
+            return false;
+        }
+        Place place = winner.iterator().next();
+        return player == board[place.x][place.y];
+    }
+
+    /** Return the winning row. For those who are not familiar with
+     * the Iterable interface, you may return an object of
+     * List<Place>. */
+    public Iterable<Place> winningRow() {
+        // Create list of winning position
+        List<Place> winningRow = new LinkedList<>();
+
         // Check rows
         for (int row = 0; row < size; row++) {
             for (int col = 0; col <= size - 5; col++) {
-                if (player == board[row][col] &&
+                Player player = board[row][col];
+                if (player != null &&
                         player == board[row][col + 1] &&
                         player == board[row][col + 2] &&
                         player == board[row][col + 3] &&
                         player == board[row][col + 4]) {
-                    return true;
+                    winningRow.add(new Place(row,col));
+                    winningRow.add(new Place(row,col+1));
+                    winningRow.add(new Place(row,col+2));
+                    winningRow.add(new Place(row,col+3));
+                    winningRow.add(new Place(row,col+4));
+                    return winningRow;
                 }
             }
         }
@@ -133,12 +155,18 @@ public class Board {
         // Check columns
         for (int col = 0; col < size; col++) {
             for (int row = 0; row <= size - 5; row++) {
-                if (player == board[row][col] &&
+                Player player = board[row][col];
+                if (player != null &&
                         player == board[row + 1][col] &&
                         player == board[row + 2][col] &&
                         player == board[row + 3][col]
                         && player == board[row + 4][col]) {
-                    return true;
+                    winningRow.add(new Place(row,col));
+                    winningRow.add(new Place(row+1,col));
+                    winningRow.add(new Place(row+2,col));
+                    winningRow.add(new Place(row+3,col));
+                    winningRow.add(new Place(row+4,col));
+                    return winningRow;
                 }
             }
         }
@@ -146,33 +174,37 @@ public class Board {
         // Check diagonals
         for (int row = 0; row <= size - 5; row++) {
             for (int col = 0; col <= size - 5; col++) {
-                if (player == board[row][col] &&
+                Player player = board[row][col];
+                if (player != null &&
                         player == board[row + 1][col + 1] &&
                         player == board[row + 2][col + 2] &&
                         player == board[row + 3][col + 3] &&
                         player == board[row + 4][col + 4]) {
-                    return true;
+                    winningRow.add(new Place(row,col));
+                    winningRow.add(new Place(row+1,col+1));
+                    winningRow.add(new Place(row+2,col+2));
+                    winningRow.add(new Place(row+3,col+3));
+                    winningRow.add(new Place(row+4,col+4));
+                    return winningRow;
                 }
                 player = board[row + 4][col];
-                if (player == board[row + 4][col] &&
+                if (player != null &&
                         player == board[row + 3][col + 1] &&
                         player == board[row + 2][col + 2] &&
                         player == board[row + 1][col + 3] &&
                         player == board[row][col + 4]) {
-                    return true;
+                    winningRow.add(new Place(row+4,col));
+                    winningRow.add(new Place(row+3,col+1));
+                    winningRow.add(new Place(row+2,col+2));
+                    winningRow.add(new Place(row+1,col+3));
+                    winningRow.add(new Place(row,col+4));
+                    return winningRow;
                 }
             }
         }
 
-        // No winning combination for player found
-        return false;
-    }
-
-    /** Return the winning row. For those who are not familiar with
-     * the Iterable interface, you may return an object of
-     * List<Place>. */
-    public Iterable<Place> winningRow() {
-        return new ArrayList<>();
+        // No winner
+        return winningRow;
     }
 
     /**
@@ -198,8 +230,6 @@ public class Board {
             this.x = x;
             this.y = y;
         }
-
-        // other methods if needed ...
     }
 }
 /*
