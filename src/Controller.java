@@ -41,7 +41,7 @@ public class Controller {
     public void startGame() {
         while(!game.gameOver()) {
             // Refresh the console UI
-            omokConsole.displayBoard(board.getBoard());
+            //omokConsole.displayBoard(board.getBoard());
 
             // dequeue the current player
             currentPlayer = playerQueue.poll();
@@ -54,10 +54,10 @@ public class Controller {
         }
 
         if(board.isFull()) {
-            omokConsole.displayBoard(board.getBoard());
+            //omokConsole.displayBoard(board.getBoard());
             omokConsole.displayMessage("It's a tie!");
         } else {
-            omokConsole.displayBoard(board.getBoard());
+            //omokConsole.displayBoard(board.getBoard());
             omokConsole.displayMessage(currentPlayer.getName() + " has won the game!");
         }
     }
