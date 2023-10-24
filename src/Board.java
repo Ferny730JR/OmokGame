@@ -1,4 +1,7 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
 /**
  * Abstraction of an Omok board, which consists of n x n intersections
  * or places where players can place their stones. The board can be
@@ -8,7 +11,7 @@ import java.util.Arrays;
  * bottom-right intersection is represented by the indices (n-1, n-1).
  */
 public class Board {
-    char[][] board;
+    Player[][] board;
     private final int size;
 
     /** Create a new board of the default size. */
@@ -19,9 +22,9 @@ public class Board {
     /** Create a new board of the specified size. */
     public Board(int size) {
         this.size = size;
-        this.board = new char[this.size][this.size];
-        for(char[] row : board) {
-            Arrays.fill(row,'\u2022');
+        this.board = new Player[this.size][this.size];
+        for(Player[] row : board) {
+            Arrays.fill(row,null);
         }
     }
 
@@ -34,8 +37,8 @@ public class Board {
      * resetting the board to its original state.
      */
     public void clear() {
-        for(char[] row : board) {
-            Arrays.fill(row, '\u2022');
+        for(Player[] row : board) {
+            Arrays.fill(row, null);
         }
     }
 
@@ -43,9 +46,9 @@ public class Board {
      * on the board are occupied or not.
      */
     public boolean isFull() {
-        for(char[] row : board) {
-            for (char element : row) {
-                if (element == '•') return false; // if it has an empty spot, it is not full
+        for(Player[] row : board) {
+            for (Player element : row) {
+                if (element == null) return false; // if it has an empty spot, it is not full
             }
         }
         return true;
@@ -60,7 +63,7 @@ public class Board {
      * @param player Player whose stone is to be placed
      */
     public void placeStone(int x, int y, Player player) {
-        board[x][y] = player.getPlayerPiece();
+        board[x][y] = player;
     }
 
     /**
@@ -71,12 +74,7 @@ public class Board {
      * @param y 0-based row (horizontal) index
      */
     public boolean isEmpty(int x, int y) {
-        for(char[] row : board) {
-            for (char element : row) {
-                if (element != '•') return false; // if it does not have an empty spot, it is empty
-            }
-        }
-        return true;
+        return board[x][y]==null;
     }
 
     /**
@@ -86,7 +84,7 @@ public class Board {
      * @param y 0-based row (horizontal) index
      */
     public boolean isOccupied(int x, int y) {
-        return board[x][y]!='•';
+        return board[x][y]!=null;
     }
 
     /**
@@ -98,7 +96,7 @@ public class Board {
      * @param y 0-based row (horizontal) index
      */
     public boolean isOccupiedBy(int x, int y, Player player) {
-        return board[x][y]==player.getPlayerPiece();
+        return board[x][y]==player;
     }
 
     /**
@@ -109,7 +107,7 @@ public class Board {
      * @param y 0-based row (horizontal) index
      */
     public Player playerAt(int x, int y) {
-        return null;
+        return board[x][y];
     }
 
     /**
@@ -119,12 +117,62 @@ public class Board {
      * a horizontal, vertical, or diagonal direction.
      */
     public boolean isWonBy(Player player) {
+        // Check rows
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col <= size - 5; col++) {
+                if (player == board[row][col] &&
+                        player == board[row][col + 1] &&
+                        player == board[row][col + 2] &&
+                        player == board[row][col + 3] &&
+                        player == board[row][col + 4]) {
+                    return true;
+                }
+            }
+        }
+
+        // Check columns
+        for (int col = 0; col < size; col++) {
+            for (int row = 0; row <= size - 5; row++) {
+                if (player == board[row][col] &&
+                        player == board[row + 1][col] &&
+                        player == board[row + 2][col] &&
+                        player == board[row + 3][col]
+                        && player == board[row + 4][col]) {
+                    return true;
+                }
+            }
+        }
+
+        // Check diagonals
+        for (int row = 0; row <= size - 5; row++) {
+            for (int col = 0; col <= size - 5; col++) {
+                if (player == board[row][col] &&
+                        player == board[row + 1][col + 1] &&
+                        player == board[row + 2][col + 2] &&
+                        player == board[row + 3][col + 3] &&
+                        player == board[row + 4][col + 4]) {
+                    return true;
+                }
+                player = board[row + 4][col];
+                if (player == board[row + 4][col] &&
+                        player == board[row + 3][col + 1] &&
+                        player == board[row + 2][col + 2] &&
+                        player == board[row + 1][col + 3] &&
+                        player == board[row][col + 4]) {
+                    return true;
+                }
+            }
+        }
+
+        // No winning combination for player found
+        return false;
     }
 
     /** Return the winning row. For those who are not familiar with
      * the Iterable interface, you may return an object of
      * List<Place>. */
     public Iterable<Place> winningRow() {
+        return new ArrayList<>();
     }
 
     /**
