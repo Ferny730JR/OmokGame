@@ -36,7 +36,7 @@ public class OmokGame {
         }
     }
 
-    public void makeMove(Player player, String userInput) {
+    public void makeMove(Computer player, String userInput) {
         int[] move = stringToInt(userInput);
         board.updateBoard(player, move[0], move[1]);
     }

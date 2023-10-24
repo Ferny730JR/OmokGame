@@ -1,12 +1,12 @@
 import java.util.Random;
 
-public class Player {
+public class Computer {
     private final String name;
     private final char playerPiece;
     private int playerType;
 
     // Constructor
-    public Player(int playerType, String name, char playerPiece) {
+    public Computer(int playerType, String name, char playerPiece) {
         setPlayerType(playerType);
         this.name = name;
         this.playerPiece = playerPiece;

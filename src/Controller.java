@@ -6,8 +6,8 @@ public class Controller {
     ConsoleUI omokConsole;
     Board board;
 
-    Player player1, player2, currentPlayer;
-    Queue<Player> playerQueue = new LinkedList<>();
+    Computer player1, player2, currentPlayer;
+    Queue<Computer> playerQueue = new LinkedList<>();
 
     int gameType;
     public Controller() {}
@@ -26,11 +26,11 @@ public class Controller {
         // Set the game type
         gameType = omokConsole.selectGameMode();
         if(gameType == 1) { // Human vs. Human
-            player1 = new Player(1, "player1", 'X');
-            player2 = new Player(1, "player2", 'O');
+            player1 = new Computer(1, "player1", 'X');
+            player2 = new Computer(1, "player2", 'O');
         } else { // Human vs. Computer
-            player1 = new Player(1, "player1", 'X');
-            player2 = new Player(2, "computer1", 'O');
+            player1 = new Computer(1, "player1", 'X');
+            player2 = new Computer(2, "computer1", 'O');
         }
 
         // Create the players
@@ -62,7 +62,7 @@ public class Controller {
         }
     }
 
-    public void gameTurn(Player currentPlayer) {
+    public void gameTurn(Computer currentPlayer) {
         // Prompt the player for move
         String move = omokConsole.selectNextMove(currentPlayer);
 
