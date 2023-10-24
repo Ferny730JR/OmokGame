@@ -1,9 +1,22 @@
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 public class ConsoleUI {
+    Board board;
+    InputStream in;
+    PrintStream out;
     Scanner scanner = new Scanner(System.in);
 
     // Constructor
-    public ConsoleUI() {}
+    public ConsoleUI(Board board) {
+        this(board,System.in,System.out);
+    }
+
+    public ConsoleUI(Board board, InputStream in, PrintStream out) {
+        this.board = board;
+        this.in = in;
+        this.out = out;
+    }
 
     // Methods
     public void displayBoard(char[][] board) {
@@ -24,7 +37,7 @@ public class ConsoleUI {
         System.out.printf(msg);
     }
 
-    public int selectGameType() {
+    public int selectGameMode() {
         displayMessage("Enter 1 to play against human, or 2 to play against computer: ");
 
         int userInput=0;
@@ -46,7 +59,7 @@ public class ConsoleUI {
         return userInput;
     }
 
-    public String selectNextMove(Player player, Board board) {
+    public String selectNextMove(Player player) {
         if(player.getPlayerType() == 2)
             return player.makeMove(board);
         System.out.printf("%s's turn!\n",player.getPlayerName());

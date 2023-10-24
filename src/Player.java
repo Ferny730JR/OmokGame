@@ -41,14 +41,12 @@ public class Player {
         // Check if the computer can win in the next move
         int[] winningMove = findWinningMove('O', board);
         if (winningMove != null) {
-            //board.getBoard()[winningMove[0]][winningMove[1]] = getPlayerPiece();
             return winningMove;
         }
 
         // Check if the human can win in the next move and block them
         int[] blockingMove = findWinningMove('X', board);
         if (blockingMove != null) {
-            //board.getBoard()[blockingMove[0]][blockingMove[1]] = 'O';
             return blockingMove;
         }
 

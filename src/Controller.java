@@ -21,10 +21,10 @@ public class Controller {
         // Creates game, board, and Console UI
         board = new Board(15);
         game = new OmokGame(board);
-        omokConsole = new ConsoleUI();
+        omokConsole = new ConsoleUI(board);
 
         // Set the game type
-        gameType = omokConsole.selectGameType();
+        gameType = omokConsole.selectGameMode();
         if(gameType == 1) { // Human vs. Human
             player1 = new Player(1, "player1", 'X');
             player2 = new Player(1, "player2", 'O');
@@ -64,12 +64,12 @@ public class Controller {
 
     public void gameTurn(Player currentPlayer) {
         // Prompt the player for move
-        String move = omokConsole.selectNextMove(currentPlayer, board);
+        String move = omokConsole.selectNextMove(currentPlayer);
 
         // Determine if move is valid; keep prompting for move
         while(!game.moveIsValid(move)) {
             omokConsole.displayMessage("Move is invalid :(\n");
-            move = omokConsole.selectNextMove(currentPlayer, board);
+            move = omokConsole.selectNextMove(currentPlayer);
         }
 
         // Have the player make the move
