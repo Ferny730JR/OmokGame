@@ -227,6 +227,27 @@ public class Board {
             this.x = x;
             this.y = y;
         }
+
+        @Override
+        public boolean equals(Object other) {
+
+            if (this == other) { return true; }
+
+            if (other == null) { return false; }
+
+            if (getClass() != other.getClass()) { return false; }
+
+            return x == ((Place) other).x && y == ((Place) other).y;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = x;
+            result = result << 8 | y;
+            return result;
+        }
+
+
     }
 }
 /*
