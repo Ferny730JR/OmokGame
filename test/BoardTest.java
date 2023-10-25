@@ -166,19 +166,19 @@ class BoardTest {
     }
 
     @Test
-    void testIsEmpty2() {
+    void testIsEmpty2() { // check empty position at max board length
         int x = board.size()-1;
         int y = board.size()-1;
         assertTrue(board.isEmpty(x,y));
     }
     @Test
-    void testIsEmpty3() { // check occupied position
+    void testIsEmpty3() { // check occupied position at beginning index
         board.placeStone(0,0,player);
         assertFalse(board.isEmpty(0,0));
     }
 
     @Test
-    void testIsEmpty4() {
+    void testIsEmpty4() { // check occupied position at max index
         int x = board.size()-1;
         int y = board.size()-1;
         board.placeStone(x,y,player);
@@ -186,7 +186,7 @@ class BoardTest {
     }
 
     @Test
-    void testIsEmpty5() {
+    void testIsEmpty5() { // check when using index that is out of range
         int x = board.size();
         int y = board.size();
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> board.isEmpty(x,y));
@@ -194,25 +194,25 @@ class BoardTest {
 
     /* Test isOccupied() */
     @Test
-    void testIsOccupied1() {
+    void testIsOccupied1() { // test when index is not occupied
         assertFalse(board.isOccupied(0,0));
     }
 
     @Test
-    void testIsOccupied2() {
+    void testIsOccupied2() { // test when max index is not occupied
         int x = board.size()-1;
         int y = board.size()-1;
         assertFalse(board.isOccupied(x,y));
     }
 
     @Test
-    void testIsOccupied3() {
+    void testIsOccupied3() { // test when origin index is occupied
         board.board[0][0]=player;
         assertTrue(board.isOccupied(0,0));
     }
 
     @Test
-    void testIsOccupied4() {
+    void testIsOccupied4() { // test when max index is occupied
         int x = board.size()-1;
         int y = board.size()-1;
         board.board[x][y]=player;
@@ -220,7 +220,7 @@ class BoardTest {
     }
 
     @Test
-    void testIsOccupied5() {
+    void testIsOccupied5() { // test when index is out of bounds
         int x = board.size();
         int y = board.size();
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> board.isOccupied(x,y));
@@ -228,7 +228,34 @@ class BoardTest {
 
     /* Test isOccupiedBy() */
     @Test
-    void isOccupiedBy() {
+    void isOccupiedBy1() { // test when no player occupies position
+        assertFalse(board.isOccupiedBy(0, 0, player));
+    }
+
+    @Test
+    void isOccupiedBy2() { // test player occupies position
+        board.board[0][0] = player;
+        assertTrue(board.isOccupiedBy(0, 0, player));
+    }
+
+    @Test
+    void isOccupiedBy3() { // test when different players occupies position
+        board.board[0][0] = new Player("",' ');
+        assertFalse(board.isOccupiedBy(0, 0, player));
+    }
+
+    @Test
+    void isOccupiedBy4() { // test when new same player occupies position
+        Player newplayer = new Player("",' ');
+        board.board[0][0] = newplayer;
+        assertTrue(board.isOccupiedBy(0, 0, newplayer));
+    }
+
+    @Test
+    void isOccupiedBy5() { // test when new player occupies position of player
+        Player newplayer = new Player("",' ');
+        board.board[0][0] = player;
+        assertFalse(board.isOccupiedBy(0, 0, newplayer));
     }
 
     /* Test playerAt() */
