@@ -2,7 +2,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -493,6 +495,127 @@ class BoardTest {
 
     /* test winningRow() */
     @Test
-    void testWinningRow() {
+    void testWinningRow1() { // No winning row
+        assertEquals(new ArrayList<>(),board.winningRow());
+    }
+
+    @Test
+    void testWinningRow2() { // Test WinningRow in row direction
+        List<Board.Place> winningRow = new ArrayList<>();
+        int x = 0;
+        int y = 0;
+        board.board[x][y] = board.board[x][y+1] = board.board[x][y+2] = board.board[x][y+3] = board.board[x][y+4] = player;
+        winningRow.add(new Board.Place(x,y));
+        winningRow.add(new Board.Place(x,y+1));
+        winningRow.add(new Board.Place(x,y+2));
+        winningRow.add(new Board.Place(x,y+3));
+        winningRow.add(new Board.Place(x,y+4));
+
+        assertEquals(winningRow,board.winningRow());
+    }
+
+    @Test
+    void testWinningRow3() { // Test WinningRow in reverse row direction
+        List<Board.Place> winningRow = new ArrayList<>();
+        int x = 0;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x][y-1] = board.board[x][y-2] = board.board[x][y-3] = board.board[x][y-4] = player;
+        winningRow.add(new Board.Place(x,y-4));
+        winningRow.add(new Board.Place(x,y-3));
+        winningRow.add(new Board.Place(x,y-2));
+        winningRow.add(new Board.Place(x,y-1));
+        winningRow.add(new Board.Place(x,y));
+
+        assertEquals(winningRow,board.winningRow());
+    }
+
+    @Test
+    void testWinningRow4() { // Test WinningRow in column direction
+        List<Board.Place> winningRow = new ArrayList<>();
+        int x = 0;
+        int y = 0;
+        board.board[x][y] = board.board[x+1][y] = board.board[x+2][y] = board.board[x+3][y] = board.board[x+4][y] = player;
+        winningRow.add(new Board.Place(x,y));
+        winningRow.add(new Board.Place(x+1,y));
+        winningRow.add(new Board.Place(x+2,y));
+        winningRow.add(new Board.Place(x+3,y));
+        winningRow.add(new Board.Place(x+4,y));
+
+        assertEquals(winningRow,board.winningRow());
+    }
+
+    @Test
+    void testWinningRow5() { // Test WinningRow in reverse column direction
+        List<Board.Place> winningRow = new ArrayList<>();
+        int x = board.size()-1;
+        int y = 0;
+        board.board[x][y] = board.board[x-1][y] = board.board[x-2][y] = board.board[x-3][y] = board.board[x-4][y] = player;
+        winningRow.add(new Board.Place(x-4,y));
+        winningRow.add(new Board.Place(x-3,y));
+        winningRow.add(new Board.Place(x-2,y));
+        winningRow.add(new Board.Place(x-1,y));
+        winningRow.add(new Board.Place(x,y));
+
+        assertEquals(winningRow,board.winningRow());
+    }
+
+    @Test
+    void testWinningRow6() { // Test WinningRow in diagonal direction
+        List<Board.Place> winningRow = new ArrayList<>();
+        int x = 0;
+        int y = 0;
+        board.board[x][y] = board.board[x+1][y+1] = board.board[x+2][y+2] = board.board[x+3][y+3] = board.board[x+4][y+4] = player;
+        winningRow.add(new Board.Place(x,y));
+        winningRow.add(new Board.Place(x+1,y+1));
+        winningRow.add(new Board.Place(x+2,y+2));
+        winningRow.add(new Board.Place(x+3,y+3));
+        winningRow.add(new Board.Place(x+4,y+4));
+
+        assertEquals(winningRow,board.winningRow());
+    }
+
+    @Test
+    void testWinningRow7() { // Test WinningRow in reverse direction
+        List<Board.Place> winningRow = new ArrayList<>();
+        int x = board.size()-1;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x-1][y-1] = board.board[x-2][y-2] = board.board[x-3][y-3] = board.board[x-4][y-4] = player;
+        winningRow.add(new Board.Place(x-4,y-4));
+        winningRow.add(new Board.Place(x-3,y-3));
+        winningRow.add(new Board.Place(x-2,y-2));
+        winningRow.add(new Board.Place(x-1,y-1));
+        winningRow.add(new Board.Place(x,y));
+
+        assertEquals(winningRow,board.winningRow());
+    }
+
+    @Test
+    void testWinningRow8() { // Test WinningRow in inverted diagonal direction
+        List<Board.Place> winningRow = new ArrayList<>();
+        int x = board.size()-1;
+        int y = 0;
+        board.board[x][y] = board.board[x-1][y+1] = board.board[x-2][y+2] = board.board[x-3][y+3] = board.board[x-4][y+4] = player;
+        winningRow.add(new Board.Place(x,y));
+        winningRow.add(new Board.Place(x-1,y+1));
+        winningRow.add(new Board.Place(x-2,y+2));
+        winningRow.add(new Board.Place(x-3,y+3));
+        winningRow.add(new Board.Place(x-4,y+4));
+
+        assertEquals(winningRow,board.winningRow());
+    }
+
+    @Test
+    void testWinningRow9() { // Test WinningRow in reverse inverted diagonal direction
+        List<Board.Place> winningRow = new ArrayList<>();
+        int x = 0;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x+1][y-1] = board.board[x+2][y-2] = board.board[x+3][y-3] = board.board[x+4][y-4] = player;
+        winningRow.add(new Board.Place(x+4,y-4));
+        winningRow.add(new Board.Place(x+3,y-3));
+        winningRow.add(new Board.Place(x+2,y-2));
+        winningRow.add(new Board.Place(x+1,y-1));
+        winningRow.add(new Board.Place(x,y));
+
+        assertEquals(winningRow,board.winningRow());
     }
 }
