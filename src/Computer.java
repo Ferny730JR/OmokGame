@@ -13,15 +13,6 @@ public class Computer extends Player {
         this.playerPiece = playerPiece;
     }
 
-    // Getter
-    public String getName() {
-        return name;
-    }
-
-    public char getPlayerPiece() {
-        return playerPiece;
-    }
-
     public int getPlayerType() {
         return playerType;
     }
@@ -74,7 +65,7 @@ public class Computer extends Player {
     }
 
     private boolean checkWinningMove(int row, int col, char playerSymbol, Board board) {
-        OmokGame game = new OmokGame(board);
+        //Game game = new Game(board);
         //board.getBoard()[col][row] = playerSymbol;
 
         //boolean hasWinningMove = playerSymbol == game.checkForWinner();
