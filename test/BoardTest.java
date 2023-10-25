@@ -260,7 +260,29 @@ class BoardTest {
 
     /* Test playerAt() */
     @Test
-    void testPlayerAt() {
+    void testPlayerAt1() { // test when there is no player at position
+        assertNull(board.playerAt(0,0));
+    }
+
+    @Test
+    void testPlayerAt2() { // test when player occupies position
+        board.board[0][0] = player;
+        assertEquals(player,board.playerAt(0,0));
+    }
+
+    @Test
+    void testPlayerAt3() { // test when new player occupies position
+        Player newplayer = new Player("", ' ');
+        board.board[0][0] = newplayer;
+        assertEquals(newplayer,board.playerAt(0,0));
+    }
+
+    @Test
+    void testPlayerAt4() { // test when player gets overwritten with new player
+        Player newplayer = new Player("",' ');
+        board.board[0][0] = player;
+        board.board[0][0] = newplayer;
+        assertEquals(newplayer,board.playerAt(0,0));
     }
 
     /* test isWonBy() */
