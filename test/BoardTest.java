@@ -18,6 +18,19 @@ class BoardTest {
         player = new Player("",' ');
     }
 
+    /* Test constructor methods */
+    @Test
+    void testBoardConstructor1() { // Test default constructor
+        assertEquals(15,board.size());
+        assertTrue(Arrays.deepEquals(new Board[15][15],board.board));
+    }
+
+    @Test
+    void testBoardConstructor2() { // Test constructor with parameter
+        board = new Board(30);
+        assertEquals(30,board.size());
+        assertTrue(Arrays.deepEquals(new Board[30][30],board.board));
+    }
     /* Test size() method */
     @Test
     void testSize1() {
