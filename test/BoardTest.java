@@ -287,7 +287,208 @@ class BoardTest {
 
     /* test isWonBy() */
     @Test
-    void testIsWonBy() {
+    void testIsWonBy1() { // test when player has won in row direction
+        board.board[0][0] = board.board[0][1] = board.board[0][2] = board.board[0][3] = board.board[0][4] = player;
+        assertTrue(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy2() { // test when player has won in reverse row direction
+        int x = 0;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x][y-1] = board.board[0][y-2] = board.board[0][y-3] = board.board[0][y-4] = player;
+        assertTrue(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy3() { // test when player has won in diagonal direction
+        board.board[0][0] = board.board[1][1] = board.board[2][2] = board.board[3][3] = board.board[4][4] = player;
+        assertTrue(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy4() { // test when player has won in reverse diagonal direction
+        int x = board.size()-1;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x-1][y-1] = board.board[x-2][y-2] = board.board[x-3][y-3] = board.board[x-4][y-4] = player;
+        assertTrue(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy5() { // test when player has won in inverted diagonal direction
+        int x = board.size()-1;
+        int y = 0;
+        board.board[x][y] = board.board[x-1][y+1] = board.board[x-2][y+2] = board.board[x-3][y+3] = board.board[x-4][y+4] = player;
+        assertTrue(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy6() { // test when player has won in reverse inverted diagonal direction
+        int x = 0;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x+1][y+-1] = board.board[x+2][y-2] = board.board[x+3][y-3] = board.board[x+4][y-4] = player;
+        assertTrue(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy7() { // test when new player has won in row direction
+        Player newplayer = new Player("", ' ');
+        board.board[0][0] = board.board[0][1] = board.board[0][2] = board.board[0][3] = board.board[0][4] = newplayer;
+        assertTrue(board.isWonBy(newplayer));
+    }
+
+    @Test
+    void testIsWonBy8() { // test when new player has won in reverse row direction
+        Player newplayer = new Player("", ' ');
+        int x = 0;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x][y-1] = board.board[x][y-2] = board.board[x][y-3] = board.board[x][y-4] = newplayer;
+        assertTrue(board.isWonBy(newplayer));
+    }
+
+    @Test
+    void testIsWonBy9() { // test when new player has won in diagonal direction
+        Player newplayer = new Player("", ' ');
+        board.board[0][0] = board.board[1][1] = board.board[2][2] = board.board[3][3] = board.board[4][4] = newplayer;
+        assertTrue(board.isWonBy(newplayer));
+    }
+
+    @Test
+    void testIsWonBy10() { // test when new player has won in reverse diagonal direction
+        Player newplayer = new Player("", ' ');
+        int x = board.size()-1;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x-1][y-1] = board.board[x-2][y-2] = board.board[x-3][y-3] = board.board[x-4][y-4] = newplayer;
+        assertTrue(board.isWonBy(newplayer));
+    }
+
+    @Test
+    void testIsWonBy11() { // test when new player has won in inverted diagonal direction
+        Player newplayer = new Player("", ' ');
+        int x = board.size()-1;
+        int y = 0;
+        board.board[x][y] = board.board[x-1][y+1] = board.board[x-2][y+2] = board.board[x-3][y+3] = board.board[x-4][y+4] = newplayer;
+        assertTrue(board.isWonBy(newplayer));
+    }
+
+    @Test
+    void testIsWonBy12() { // test when new player has won in reverse inverted diagonal direction
+        Player newplayer = new Player("", ' ');
+        int x = 0;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x+1][y+-1] = board.board[x+2][y-2] = board.board[x+3][y-3] = board.board[x+4][y-4] = newplayer;
+        assertTrue(board.isWonBy(newplayer));
+    }
+
+    @Test
+    void testIsWonBy13() { // test player when new player has won in row direction
+        Player newplayer = new Player("", ' ');
+        board.board[0][0] = board.board[0][1] = board.board[0][2] = board.board[0][3] = board.board[0][4] = newplayer;
+        assertFalse(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy14() { // test player when new player has won in reverse row direction
+        Player newplayer = new Player("", ' ');
+        int x = 0;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x][y-1] = board.board[x][y-2] = board.board[x][y-3] = board.board[x][y-4] = newplayer;
+        assertFalse(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy15() { // test player when new player has won in diagonal direction
+        Player newplayer = new Player("", ' ');
+        board.board[0][0] = board.board[1][1] = board.board[2][2] = board.board[3][3] = board.board[4][4] = newplayer;
+        assertFalse(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy16() { // test player when new player has won in reverse diagonal direction
+        Player newplayer = new Player("", ' ');
+        int x = board.size()-1;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x-1][y-1] = board.board[x-2][y-2] = board.board[x-3][y-3] = board.board[x-4][y-4] = newplayer;
+        assertFalse(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy17() { // test when player new player has won in inverted diagonal direction
+        Player newplayer = new Player("", ' ');
+        int x = board.size()-1;
+        int y = 0;
+        board.board[x][y] = board.board[x-1][y+1] = board.board[x-2][y+2] = board.board[x-3][y+3] = board.board[x-4][y+4] = newplayer;
+        assertFalse(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy18() { // test player when new player has won in reverse inverted diagonal direction
+        Player newplayer = new Player("", ' ');
+        int x = 0;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x+1][y+-1] = board.board[x+2][y-2] = board.board[x+3][y-3] = board.board[x+4][y-4] = newplayer;
+        assertFalse(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy19() { // test newplayer when player has won in row direction
+        Player newplayer = new Player("", ' ');
+        board.board[0][0] = board.board[0][1] = board.board[0][2] = board.board[0][3] = board.board[0][4] = player;
+        assertFalse(board.isWonBy(newplayer));
+    }
+
+    @Test
+    void testIsWonBy20() { // test new player when player has won in reverse row direction
+        Player newplayer = new Player("", ' ');
+        int x = 0;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x][y-1] = board.board[0][y-2] = board.board[0][y-3] = board.board[0][y-4] = player;
+        assertFalse(board.isWonBy(newplayer));
+    }
+
+    @Test
+    void testIsWonBy21() { // test new player when player has won in diagonal direction
+        Player newplayer = new Player("", ' ');
+        board.board[0][0] = board.board[1][1] = board.board[2][2] = board.board[3][3] = board.board[4][4] = player;
+        assertFalse(board.isWonBy(newplayer));
+    }
+
+    @Test
+    void testIsWonBy22() { // test new player when player has won in reverse diagonal direction
+        Player newplayer = new Player("", ' ');
+        int x = board.size()-1;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x-1][y-1] = board.board[x-2][y-2] = board.board[x-3][y-3] = board.board[x-4][y-4] = player;
+        assertFalse(board.isWonBy(newplayer));
+    }
+
+    @Test
+    void testIsWonBy23() { // test new player when player has won in inverted diagonal direction
+        Player newplayer = new Player("", ' ');
+        int x = board.size()-1;
+        int y = 0;
+        board.board[x][y] = board.board[x-1][y+1] = board.board[x-2][y+2] = board.board[x-3][y+3] = board.board[x-4][y+4] = player;
+        assertFalse(board.isWonBy(newplayer));
+    }
+
+    @Test
+    void testIsWonBy24() { // test new player when player has won in reverse inverted diagonal direction
+        Player newplayer = new Player("", ' ');
+        int x = 0;
+        int y = board.size()-1;
+        board.board[x][y] = board.board[x+1][y+-1] = board.board[x+2][y-2] = board.board[x+3][y-3] = board.board[x+4][y-4] = player;
+        assertFalse(board.isWonBy(newplayer));
+    }
+
+    @Test
+    void testIsWonBy25() { // test player has not won game
+        assertFalse(board.isWonBy(player));
+    }
+
+    @Test
+    void testIsWonBy26() { // test when new player has not won game
+        Player newplayer = new Player("", ' ');
+        assertFalse(board.isWonBy(newplayer));
     }
 
     /* test winningRow() */
