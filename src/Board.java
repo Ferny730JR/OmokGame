@@ -60,7 +60,7 @@ public class Board {
      * @param y 0-based row (horizontal) index
      * @param player Player whose stone is to be placed
      */
-    public void placeStone(int x, int y, Player player) {
+    public void placeStone(int x, int y, Player player) throws ArrayIndexOutOfBoundsException {
         board[x][y] = player;
     }
 

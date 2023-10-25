@@ -37,16 +37,12 @@ class BoardTest {
 
     @Test
     void testSize4() {
-        assertThrows(NegativeArraySizeException.class, () -> {
-            new Board(Integer.MIN_VALUE).size();
-        });
+        assertThrows(NegativeArraySizeException.class, () -> new Board(Integer.MIN_VALUE).size());
     }
 
     @Test
     void testSize5() {
-        assertThrows(NegativeArraySizeException.class, () -> {
-            new Board(-1).size();
-        });
+        assertThrows(NegativeArraySizeException.class, () -> new Board(-1).size());
     }
 
     /* Test clear() */
@@ -141,26 +137,93 @@ class BoardTest {
 
     /* test placeStone() */
     @Test
-    void testPlaceStone1() {
-
+    void testPlaceStone1() { // board coordinates should be player
+        int x = 0;
+        int y = 0;
+        board.placeStone(x,y,player);
+        assertSame(board.board[x][y], player);
     }
 
     @Test
-    void testPlaceStone2() {
+    void testPlaceStone2() { // player move should be its position in the board
+        int x = board.board.length-1;
+        int y = board.board.length-1;
+        board.placeStone(x,y,player);
+        assertSame(board.board[x][y], player);
     }
 
     @Test
-    void testPlaceStone3() {
+    void testPlaceStone3() { // throw error if move is out of bounds
+        int x = board.board.length;
+        int y = board.board.length;
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> new Board().placeStone(x,y,player));
     }
 
     /* test isEmpty() */
     @Test
-    void testIsEmpty() {
+    void testIsEmpty1() { // check empty position
+        assertTrue(board.isEmpty(0,0));
+    }
+
+    @Test
+    void testIsEmpty2() {
+        int x = board.size()-1;
+        int y = board.size()-1;
+        assertTrue(board.isEmpty(x,y));
+    }
+    @Test
+    void testIsEmpty3() { // check occupied position
+        board.placeStone(0,0,player);
+        assertFalse(board.isEmpty(0,0));
+    }
+
+    @Test
+    void testIsEmpty4() {
+        int x = board.size()-1;
+        int y = board.size()-1;
+        board.placeStone(x,y,player);
+        assertFalse(board.isEmpty(x,y));
+    }
+
+    @Test
+    void testIsEmpty5() {
+        int x = board.size();
+        int y = board.size();
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> board.isEmpty(x,y));
     }
 
     /* Test isOccupied() */
     @Test
-    void testIsOccupied() {
+    void testIsOccupied1() {
+        assertFalse(board.isOccupied(0,0));
+    }
+
+    @Test
+    void testIsOccupied2() {
+        int x = board.size()-1;
+        int y = board.size()-1;
+        assertFalse(board.isOccupied(x,y));
+    }
+
+    @Test
+    void testIsOccupied3() {
+        board.board[0][0]=player;
+        assertTrue(board.isOccupied(0,0));
+    }
+
+    @Test
+    void testIsOccupied4() {
+        int x = board.size()-1;
+        int y = board.size()-1;
+        board.board[x][y]=player;
+        assertTrue(board.isOccupied(x,y));
+    }
+
+    @Test
+    void testIsOccupied5() {
+        int x = board.size();
+        int y = board.size();
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> board.isOccupied(x,y));
     }
 
     /* Test isOccupiedBy() */
