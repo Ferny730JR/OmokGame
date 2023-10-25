@@ -1,8 +1,10 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class Controller {
-    OmokGame game;
+    Game game;
     ConsoleUI omokConsole;
     Board board;
 
@@ -19,8 +21,7 @@ public class Controller {
 
     public void init() {
         // Creates game, board, and Console UI
-        board = new Board(15);
-        game = new OmokGame(board);
+        board = new Board();
         omokConsole = new ConsoleUI(board);
 
         // Set the game type
@@ -32,6 +33,7 @@ public class Controller {
             player1 = new Computer(1, "player1", 'X');
             player2 = new Computer(2, "computer1", 'O');
         }
+        game = new Game(board, new ArrayList<>(Arrays.asList(player1, player2)));
 
         // Create the players
         playerQueue.offer(player1);
@@ -41,7 +43,7 @@ public class Controller {
     public void startGame() {
         while(!game.gameOver()) {
             // Refresh the console UI
-            //omokConsole.displayBoard(board.getBoard());
+            omokConsole.displayBoard(board);
 
             // dequeue the current player
             currentPlayer = playerQueue.poll();

@@ -19,18 +19,18 @@ public class ConsoleUI {
     }
 
     // Methods
-    public void displayBoard(char[][] board) {
+    public void displayBoard(Board board) {
         // Clear console
         System.out.println("\033[H\033[2J");
 
         // Print Top row
-        printTopRow(board);
+        printTopRow(board.board);
 
         // Print board
-        printBoard(board);
+        printBoard(board.board);
 
         // Print bottom row
-        printBottomRow(board);
+        printBottomRow(board.board);
     }
 
     public void displayMessage(String msg) {
@@ -78,7 +78,7 @@ public class ConsoleUI {
         }
     }
 
-    private static void printTopRow(char[][] board) {
+    private static void printTopRow(Player[][] board) {
         System.out.print("Y ");
         StringBuilder top_row = new StringBuilder();
         for(int i=0; i< board.length*3; i++) {
@@ -92,19 +92,23 @@ public class ConsoleUI {
         System.out.println();
     }
 
-    private static void printBoard(char[][] board) {
+    private static void printBoard(Player[][] board) {
         for(int i=1; i<board.length+1; i++) {
             if(i<10) { System.out.printf("%1s│ ",i); }
             else     { System.out.printf("%1s│ ",(char)(i+55)); }
 
-            for(char move : board[i-1]) {
-                System.out.printf(" %s ",move);
+            for(Player player : board[i-1]) {
+                if(player == null) {
+                    System.out.printf(" %s ", '•');
+                } else {
+                    System.out.printf(" %s ", player.getStone());
+                }
             }
             System.out.println(" │");
         }
     }
 
-    private static void printBottomRow(char[][] board) {
+    private static void printBottomRow(Player[][] board) {
         StringBuilder bottom_row = new StringBuilder();
         for(int i=1; i<board.length+1; i++) {
             bottom_row.append(" ").append(Integer.toString(i,board.length+1).toUpperCase()).append(" ");
