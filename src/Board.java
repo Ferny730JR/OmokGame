@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Abstraction of an Omok board, which consists of n x n intersections
@@ -115,7 +116,8 @@ public class Board {
      * a horizontal, vertical, or diagonal direction.
      */
     public boolean isWonBy(Player player) {
-        Iterable<Place> winner = winningRow();
+        //Iterable<Place> winner = winningRow();
+        Iterable<Place> winner = nInARow(5, player);
         if(!winner.iterator().hasNext()) {
             return false;
         }
@@ -205,6 +207,105 @@ public class Board {
     }
 
     /**
+     * Return the number of stone in a row the player has
+     * on the board.
+     *
+     * @param numberOfStones - number of consecutive stone
+     * @param player - the player to check their moves
+     *
+     * @return A Place iterable containing the moves of numberOfStones consecutive
+     * moves in a row.
+     *
+     * @see Place
+     */
+    public Iterable<Place> nInARow(int numberOfStones, Player player) {
+        List<Place> nInARow = new LinkedList<>();
+
+        // Check rows
+        for(int row = 0; row<size; row++) {
+            for(int col = 0; col<=size-numberOfStones; col++) {
+                nInARow.add(new Place(row,col));
+                for (int i = col; i < col + numberOfStones - 1; i++) { // O(1)
+                    try {
+                        if (board[row][i] != board[row][i + 1] || board[row][i] != player) {
+                            nInARow.clear();
+                            break;
+                        } else {
+                            nInARow.add(new Place(row, i+1));
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        nInARow.clear();
+                        break;
+                    }
+                }
+                if (nInARow.size() == numberOfStones) return nInARow;
+            }
+        }
+
+        // Check columns
+        for(int col = 0; col<size; col++) {
+            for(int row = 0; row<=size-numberOfStones; row++) {
+                nInARow.add(new Place(row, col));
+                for (int i = row; i < row + numberOfStones - 1; i++) { // O(1)
+                    try {
+                        if (board[i][col] != board[i+1][col] ||
+                                board[i][col] != player) {
+                            nInARow.clear();
+                            break;
+                        } else {
+                            nInARow.add(new Place(i+1, col));
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        nInARow.clear();
+                        break;
+                    }
+                }
+                if (nInARow.size() == numberOfStones) return nInARow;
+            }
+        }
+
+        // Check diagonals // HOLY MOLY HOW DOES THIS (NOTT???) WORK???
+        for(int row = 0; row<=size-numberOfStones; row++) {
+            for(int col = 0; col<=size-numberOfStones; col++) {
+                nInARow.add(new Place(row+4, col));
+                for (int j=row,i=col; i<col+numberOfStones-1; j--,i++) { // O(1)
+                    try {
+                        if (board[j+4][i] != board[j+3][i+1] ||
+                                board[j+4][i] != player) {
+                            nInARow.clear();
+                            break;
+                        } else {
+                            nInARow.add(new Place(j+3, i+1));
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        nInARow.clear();
+                        break;
+                    }
+                }
+                if (nInARow.size() == numberOfStones) return nInARow;
+                nInARow.add(new Place(row, col));
+                for (int j=row,i=col; i<col+numberOfStones-1; j++,i++) { // O(1)
+                    try {
+                        if (board[j][i] != board[j+1][i+1] ||
+                                board[j][i] != player) {
+                            nInARow.clear();
+                            break;
+                        } else {
+                            nInARow.add(new Place(j+1, i+1));
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        nInARow.clear();
+                        break;
+                    }
+                }
+                if (nInARow.size() == numberOfStones) return nInARow;
+            }
+        }
+        return nInARow;
+
+    }
+
+    /**
      * An intersection on an Omok board identified by its 0-based column
      * index (x) and row index (y). The indices determine the position
      * of a place on the board, with (0, 0) denoting the top-left
@@ -230,13 +331,9 @@ public class Board {
 
         @Override
         public boolean equals(Object other) {
-
             if (this == other) { return true; }
-
             if (other == null) { return false; }
-
             if (getClass() != other.getClass()) { return false; }
-
             return x == ((Place) other).x && y == ((Place) other).y;
         }
 
@@ -246,39 +343,5 @@ public class Board {
             result = result << 8 | y;
             return result;
         }
-
-
     }
 }
-/*
-public class Board {
-    char[][] board;
-    int boardSize;
-    public Board(int boardSize) {
-        // Initialize board
-        this.boardSize = boardSize;
-        this.board = new char[boardSize][boardSize];
-        for (char[] chars : board)
-            Arrays.fill(chars, '•');
-    }
-    // Getter methods
-    public char[][] getBoard() {
-        return board;
-    }
-    public int getBoardSize() {
-        return boardSize;
-    }
-
-    // Board methods
-    public void updateBoard(Player player, int x, int y) {
-        board[y-1][x-1] = player.getPlayerPiece();
-    }
-
-    public boolean isFull() {
-        for(char[] row : board)
-            for(char element : row)
-                if(element == '•') return false;
-        return true;
-    }
-}
- */
