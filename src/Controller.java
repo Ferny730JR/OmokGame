@@ -21,7 +21,7 @@ public class Controller {
 
     public void init() {
         // Creates game, board, and Console UI
-        board = new Board(3);
+        board = new Board(5);
         omokConsole = new ConsoleUI(board);
 
         // Set the game type

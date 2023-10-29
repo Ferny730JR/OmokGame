@@ -4,7 +4,7 @@ import java.util.List;
 public class Computer extends Player {
     private Board currentBoardState;
     private Player opponent;
-    private int maxDepth = 1;
+    private int maxDepth = 6;
 
     /**
      * Constructor
@@ -23,7 +23,6 @@ public class Computer extends Player {
     public void makeMove(Board board) {
         this.currentBoardState = board.getDeepCopy();
         float bestMoveInfo = miniMax(true, currentBoardState, maxDepth);
-
         board.placeStone(((int)(bestMoveInfo))/ board.size(), ((int)(bestMoveInfo))% board.size(), this);
     }
 
@@ -55,7 +54,7 @@ public class Computer extends Player {
      * @return the score of the board
      */
     private float getMax (Board board, int currentDepth) {
-        float bestScore = Float.MIN_VALUE;
+        float bestScore = -Float.MAX_VALUE;
         Board.Place indexOfBestMove = new Board.Place(0,0);
 
         for (Board.Place position : getEmptyCellsIndexes(board)) {
@@ -73,7 +72,7 @@ public class Computer extends Player {
         }
 
         board.placeStone(indexOfBestMove.x, indexOfBestMove.y, this);
-        if(currentDepth == maxDepth) {
+        if(currentDepth == maxDepth-1) {
             return indexOfBestMove.x * board.size() + indexOfBestMove.y;
         } else {
             return bestScore;
