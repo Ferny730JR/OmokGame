@@ -117,12 +117,18 @@ public class Board {
      */
     public boolean isWonBy(Player player) {
         //Iterable<Place> winner = winningRow();
-        Iterable<Place> winner = nInARow(5, player);
-        if(!winner.iterator().hasNext()) {
-            return false;
+        List<Place> winner = nInARow(3,player);
+        if(winner.size()>0) {
+            Place place = winner.get(0);
+            return player == board[place.x][place.y];
         }
-        Place place = winner.iterator().next();
-        return player == board[place.x][place.y];
+        return false;
+
+//        if(!winner.iterator().hasNext()) {
+//            return false;
+//        }
+//        Place place = winner.iterator().next();
+//        return player == board[place.x][place.y];
     }
 
     /** Return the winning row. For those who are not familiar with
@@ -218,8 +224,20 @@ public class Board {
      *
      * @see Place
      */
-    public Iterable<Place> nInARow(int numberOfStones, Player player) {
+    public List<Place> nInARow(int numberOfStones, Player player) {
         List<Place> nInARow = new LinkedList<>();
+
+        // Special Case 1 stone in a row
+        if(numberOfStones == 1) {
+            for(int row=0; row<size; row++) {
+                for(int col=0; col<size; col++) {
+                    if(player==board[row][col]) {
+                        nInARow.add(new Place(row,col));
+                        return nInARow;
+                    }
+                }
+            }
+        }
 
         // Check rows
         for(int row = 0; row<size; row++) {
@@ -267,11 +285,11 @@ public class Board {
         // Check diagonals // HOLY MOLY HOW DOES THIS (NOTT???) WORK???
         for(int row = 0; row<=size-numberOfStones; row++) {
             for(int col = 0; col<=size-numberOfStones; col++) {
-                nInARow.add(new Place(row+4, col));
+                nInARow.add(new Place(row+numberOfStones-1, col));
                 for (int j=row,i=col; i<col+numberOfStones-1; j--,i++) { // O(1)
                     try {
-                        if (board[j+4][i] != board[j+3][i+1] ||
-                                board[j+4][i] != player) {
+                        if (board[j+numberOfStones-1][i] != board[j+numberOfStones-2][i+1] ||
+                                board[j+numberOfStones-1][i] != player) {
                             nInARow.clear();
                             break;
                         } else {
@@ -303,6 +321,22 @@ public class Board {
         }
         return nInARow;
 
+    }
+
+    /**
+     * Get a deep copy of the Tic Tac Toe board.
+     * @return      an identical copy of the board
+     */
+    public Board getDeepCopy () {
+        Board newBoard = new Board(size);
+
+        for(int row = 0; row < newBoard.size(); row++) {
+            for(int col = 0; col < newBoard.size(); col++) {
+                newBoard.board[row][col] = this.board[row][col];
+            }
+        }
+
+        return newBoard;
     }
 
     /**
