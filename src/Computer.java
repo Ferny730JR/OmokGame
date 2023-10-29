@@ -2,9 +2,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Computer extends Player {
-    private Board currentBoardState;
-    private Player opponent;
-    private int maxDepth = 6;
+    private final Player opponent;
+    private final int maxDepth = 6;
 
     /**
      * Constructor
@@ -21,7 +20,7 @@ public class Computer extends Player {
      * @return The computer move.
      */
     public void makeMove(Board board) {
-        this.currentBoardState = board.getDeepCopy();
+        Board currentBoardState = board.getDeepCopy();
         float bestMoveInfo = miniMax(true, currentBoardState, maxDepth);
         board.placeStone(((int)(bestMoveInfo))/ board.size(), ((int)(bestMoveInfo))% board.size(), this);
     }
@@ -34,16 +33,19 @@ public class Computer extends Player {
      * @return              the score of the board
      */
     private float miniMax(Boolean isMaximizingPlayer, Board board, int currentDepth) {
+        return miniMax(isMaximizingPlayer, board, currentDepth, -Float.MAX_VALUE, Float.MAX_VALUE);
+    }
+
+    private float miniMax(Boolean isMaximizingPlayer, Board board, int currentDepth, float alpha, float beta) {
         if (currentDepth-- == 0 || board.isFull() || board.isWonBy(this) || board.isWonBy(opponent)) {
             return score(board);
         }
 
         if (isMaximizingPlayer) {
-            return getMax(board, currentDepth);
+            return getMax(board, currentDepth, alpha, beta);
         } else {
-            return getMin(board, currentDepth);
+            return getMin(board, currentDepth, alpha, beta);
         }
-
     }
 
     /**
@@ -53,7 +55,7 @@ public class Computer extends Player {
      * @param currentDepth the current depth
      * @return the score of the board
      */
-    private float getMax (Board board, int currentDepth) {
+    private float getMax (Board board, int currentDepth, float alpha, float beta) {
         float bestScore = -Float.MAX_VALUE;
         Board.Place indexOfBestMove = new Board.Place(0,0);
 
@@ -62,12 +64,15 @@ public class Computer extends Player {
             Board modifiedBoard = board.getDeepCopy();
             modifiedBoard.placeStone(position.x, position.y, this);
 
-            float score = miniMax(false, modifiedBoard, currentDepth);
+            float score = miniMax(false, modifiedBoard, currentDepth, alpha, beta);
 
             if (score >= bestScore) {
                 bestScore = score;
                 indexOfBestMove = position;
             }
+
+            alpha = Math.max(alpha, bestScore);
+            if(beta<=alpha) break;
 
         }
 
@@ -85,7 +90,7 @@ public class Computer extends Player {
      * @param currentDepth    the current depth
      * @return              the score of the board
      */
-    private float getMin (Board board, int currentDepth) {
+    private float getMin (Board board, int currentDepth, float alpha, float beta) {
         float bestScore = Float.MAX_VALUE;
         Board.Place indexOfBestMove = new Board.Place(0,0);
 
@@ -94,12 +99,15 @@ public class Computer extends Player {
             Board modifiedBoard = board.getDeepCopy();
             modifiedBoard.placeStone(position.x, position.y, opponent);
 
-            float score = miniMax(true, modifiedBoard, currentDepth);
+            float score = miniMax(true, modifiedBoard, currentDepth, alpha, beta);
 
             if (score <= bestScore) {
                 bestScore = score;
                 indexOfBestMove = position;
             }
+
+            beta = Math.min(beta, bestScore);
+            if(beta<=alpha) break;
 
         }
 
