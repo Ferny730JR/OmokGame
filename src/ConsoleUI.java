@@ -3,22 +3,19 @@ import java.io.PrintStream;
 import java.util.Scanner;
 public class ConsoleUI {
     Board board;
-    InputStream in;
-    PrintStream out;
     Scanner scanner = new Scanner(System.in);
 
-    // Constructor
+    /**
+     * Create a new ConsoleUI with the specified board
+     *
+     */
     public ConsoleUI(Board board) {
-        this(board,System.in,System.out);
-    }
-
-    public ConsoleUI(Board board, InputStream in, PrintStream out) {
         this.board = board;
-        this.in = in;
-        this.out = out;
     }
 
-    // Methods
+    /**
+     * Print the specified board to the console.
+     */
     public void displayBoard(Board board) {
         // Clear console
         System.out.println("\033[H\033[2J");
@@ -33,10 +30,21 @@ public class ConsoleUI {
         printBottomRow(board.board);
     }
 
+    /**
+     * Prints the specified string to the console
+     */
     public void displayMessage(String msg) {
         System.out.printf(msg);
     }
 
+    /**
+     * Prompts the user to select a specified game mode.
+     * The game mode can be either human vs. human, or
+     * human vs. computer.
+     *
+     * @return The selected game mode. 1 is human vs. human,
+     * 2 is human vs. computer
+     */
     public int selectGameMode() {
         displayMessage("Enter 1 to play against human, or 2 to play against computer: ");
 
@@ -59,17 +67,22 @@ public class ConsoleUI {
         return userInput;
     }
 
-    public String selectNextMove(Computer player) {
-        if(player.getPlayerType() == 2)
-            return player.makeMove(board);
+    /**
+     * Prompts the player to select their next move for
+     * the board. If the player is a computer, determine
+     * the move using a minimax algorithm.
+     *
+     * @return The player's move.
+     */
+    public String selectNextMove(Player player) {
         System.out.printf("%s's turn!\n",player.getName());
         System.out.print("Select your move (x y): ");
         return scanner.nextLine();
     }
 
 
-
-    // Helper methods
+    /** Underlines the given text.
+     */
     private static void underlineText(String text) {
         // Print an underline for each character in the text
         for (int i = 0; i < text.length(); i++) {

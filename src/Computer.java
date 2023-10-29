@@ -1,78 +1,141 @@
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Computer extends Player {
-    private final String name;
-    private final char playerPiece;
-    private int playerType;
+    private Board currentBoardState;
+    private Player opponent;
+    private int maxDepth = 1;
 
-    // Constructor
-    public Computer(int playerType, String name, char playerPiece) {
+    /**
+     * Constructor
+     */
+    public Computer(String name, char playerPiece, Board board, Player opponent) {
         super(name,playerPiece);
-        setPlayerType(playerType);
-        this.name = name;
-        this.playerPiece = playerPiece;
+        this.opponent = opponent;
     }
 
-    public int getPlayerType() {
-        return playerType;
+    /**
+     * Compute the most optimal move the computer can make based
+     * on the current state of the board.
+     *
+     * @return The computer move.
+     */
+    public void makeMove(Board board) {
+        this.currentBoardState = board.getDeepCopy();
+        float bestMoveInfo = miniMax(true, currentBoardState, maxDepth);
+
+        board.placeStone(((int)(bestMoveInfo))/ board.size(), ((int)(bestMoveInfo))% board.size(), this);
     }
 
-    // Methods (set player to human/computer)
-    private void setPlayerType(int playerType) {
-        this.playerType = playerType;
-    }
-
-    public String makeMove(Board board) {
-        int[] moves = makeMovePlayerComputer(board);
-        String s = Integer.toString(moves[0], board.size()+1) + " " + Integer.toString(moves[1], board.size()+1);
-        System.out.println("Computer move: "+s);
-        return s;
-    }
-
-    public int[] makeMovePlayerComputer(Board board) {
-        // Check if the computer can win in the next move
-        int[] winningMove = findWinningMove('O', board);
-        if (winningMove != null) {
-            return winningMove;
+    /**
+     * The meat of the algorithm.
+     * @param isMaximizingPlayer If the AI is making its turn
+     * @param board         the Tic Tac Toe board to play on
+     * @param currentDepth    the current depth
+     * @return              the score of the board
+     */
+    private float miniMax(Boolean isMaximizingPlayer, Board board, int currentDepth) {
+        if (currentDepth-- == 0 || board.isFull() || board.isWonBy(this) || board.isWonBy(opponent)) {
+            return score(board);
         }
 
-        // Check if the human can win in the next move and block them
-        int[] blockingMove = findWinningMove('X', board);
-        if (blockingMove != null) {
-            return blockingMove;
+        if (isMaximizingPlayer) {
+            return getMax(board, currentDepth);
+        } else {
+            return getMin(board, currentDepth);
         }
 
-        // If no immediate winning or blocking move, make a random move
-        Random random = new Random();
-        int x = random.nextInt(board.size())+1;
-        int y = random.nextInt(board.size())+1;
-        return new int[]{x,y};
     }
 
-    private int[] findWinningMove(char playerSymbol, Board board) {
-        // Check rows, columns, and diagonals for winning moves
-//        for (int i = 0; i < board.size(); i++) {
-//            for (int j = 0; j < board.size(); j++) {
-//                if (board.getBoard()[i][j] == '•') {
-//                    // Check if placing a piece at this position results in a win
-//                    if (checkWinningMove(j, i, playerSymbol, board)) {
-//                        return new int[]{j+1, i+1};
-//                    }
-//                }
-//            }
-//        }
-        return null; // No winning move found
+    /**
+     * Play the move with the highest score.
+     *
+     * @param board      the Tic Tac Toe board to play on
+     * @param currentDepth the current depth
+     * @return the score of the board
+     */
+    private float getMax (Board board, int currentDepth) {
+        float bestScore = Float.MIN_VALUE;
+        Board.Place indexOfBestMove = new Board.Place(0,0);
+
+        for (Board.Place position : getEmptyCellsIndexes(board)) {
+
+            Board modifiedBoard = board.getDeepCopy();
+            modifiedBoard.placeStone(position.x, position.y, this);
+
+            float score = miniMax(false, modifiedBoard, currentDepth);
+
+            if (score >= bestScore) {
+                bestScore = score;
+                indexOfBestMove = position;
+            }
+
+        }
+
+        board.placeStone(indexOfBestMove.x, indexOfBestMove.y, this);
+        if(currentDepth == maxDepth) {
+            return indexOfBestMove.x * board.size() + indexOfBestMove.y;
+        } else {
+            return bestScore;
+        }
     }
 
-    private boolean checkWinningMove(int row, int col, char playerSymbol, Board board) {
-        //Game game = new Game(board);
-        //board.getBoard()[col][row] = playerSymbol;
+    /**
+     * Play the move with the lowest score.
+     * @param board         the Tic Tac Toe board to play on
+     * @param currentDepth    the current depth
+     * @return              the score of the board
+     */
+    private float getMin (Board board, int currentDepth) {
+        float bestScore = Float.MAX_VALUE;
+        Board.Place indexOfBestMove = new Board.Place(0,0);
 
-        //boolean hasWinningMove = playerSymbol == game.checkForWinner();
+        for (Board.Place position : getEmptyCellsIndexes(board)) {
 
-        //board.getBoard()[col][row] = '•';
+            Board modifiedBoard = board.getDeepCopy();
+            modifiedBoard.placeStone(position.x, position.y, opponent);
 
-        //return hasWinningMove;
-        return false;
+            float score = miniMax(true, modifiedBoard, currentDepth);
+
+            if (score <= bestScore) {
+                bestScore = score;
+                indexOfBestMove = position;
+            }
+
+        }
+
+        board.placeStone(indexOfBestMove.x, indexOfBestMove.y, opponent);
+        if(currentDepth == maxDepth) {
+            return indexOfBestMove.x * board.size() + indexOfBestMove.y;
+        } else {
+            return bestScore;
+        }
+    }
+
+    /**
+     * Get the score of the board.
+     * @param player        the play that the AI will identify as
+     * @param board         the Tic Tac Toe board to play on
+     * @return              the score of the board
+     */
+    private float score (Board board) {
+        if (board.isWonBy(this)) {
+            return 1f;
+        } else if (board.isWonBy(opponent)) {
+            return -1f;
+        } else if (board.isFull()) {
+            return 0f;
+        }
+        return 0f;
+    }
+
+    public List<Board.Place> getEmptyCellsIndexes(Board board) {
+        List<Board.Place> availableCellsList = new ArrayList<>();
+        for(int row = 0; row<board.size(); row++) {
+            for(int col = 0; col<board.size(); col++) {
+                if(board.board[row][col] == null) availableCellsList.add(new Board.Place(row,col));
+            }
+        }
+        return availableCellsList;
     }
 }

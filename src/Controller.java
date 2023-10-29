@@ -8,8 +8,8 @@ public class Controller {
     ConsoleUI omokConsole;
     Board board;
 
-    Computer player1, player2, currentPlayer;
-    Queue<Computer> playerQueue = new LinkedList<>();
+    Player player1, player2, currentPlayer;
+    Queue<Player> playerQueue = new LinkedList<>();
 
     int gameType;
     public Controller() {}
@@ -21,17 +21,17 @@ public class Controller {
 
     public void init() {
         // Creates game, board, and Console UI
-        board = new Board();
+        board = new Board(3);
         omokConsole = new ConsoleUI(board);
 
         // Set the game type
         gameType = omokConsole.selectGameMode();
         if(gameType == 1) { // Human vs. Human
-            player1 = new Computer(1, "player1", 'X');
-            player2 = new Computer(1, "player2", 'O');
+            player1 = new Player("player1", 'X');
+            player2 = new Player("player2", 'O');
         } else { // Human vs. Computer
-            player1 = new Computer(1, "player1", 'X');
-            player2 = new Computer(2, "computer1", 'O');
+            player1 = new Player("player1", 'X');
+            player2 = new Computer("computer1", 'O', board, player1);
         }
         game = new Game(board, new ArrayList<>(Arrays.asList(player1, player2)));
 
@@ -56,15 +56,20 @@ public class Controller {
         }
 
         if(board.isFull()) {
-            //omokConsole.displayBoard(board.getBoard());
+            omokConsole.displayBoard(board);
             omokConsole.displayMessage("It's a tie!");
         } else {
-            //omokConsole.displayBoard(board.getBoard());
+            omokConsole.displayBoard(board);
             omokConsole.displayMessage(currentPlayer.getName() + " has won the game!");
         }
     }
 
-    public void gameTurn(Computer currentPlayer) {
+    public void gameTurn(Player currentPlayer) {
+        if(currentPlayer.getClass() == Computer.class) {
+            ((Computer) currentPlayer).makeMove(board);
+            return;
+        }
+
         // Prompt the player for move
         String move = omokConsole.selectNextMove(currentPlayer);
 
