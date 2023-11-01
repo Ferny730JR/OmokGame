@@ -4,14 +4,14 @@ import java.util.Random;
 
 public class Computer extends Player {
     private final Player opponent;
-    private final int maxDepth = 8;
+    private final int maxDepth = 20;
     private long total_calls = 0;
     private final Random random = new Random();
 
     /**
      * Constructor
      */
-    public Computer(String name, char playerPiece, Board board, Player opponent) {
+    public Computer(String name, char playerPiece, Player opponent) {
         super(name,playerPiece);
         this.opponent = opponent;
     }
@@ -20,7 +20,6 @@ public class Computer extends Player {
      * Compute the most optimal move the computer can make based
      * on the current state of the board.
      *
-     * @return The computer move.
      */
     public void makeMove(Board board) {
         total_calls = 0;
@@ -64,13 +63,13 @@ public class Computer extends Player {
     private float getMax (Board board, int currentDepth, float alpha, float beta) {
         float bestScore = -Float.MAX_VALUE;
         List<Board.Place> bestMoves = new ArrayList<>();
+        List<Board.Place> emptyCells = getEmptyCellsIndexes(board);
 
-        for (Board.Place position : getEmptyCellsIndexes(board)) {
+        for (Board.Place position : emptyCells) {
 
-            Board modifiedBoard = board.getDeepCopy();
-            modifiedBoard.placeStone(position.x, position.y, this);
-
-            float score = miniMax(false, modifiedBoard, currentDepth, alpha, beta);
+            board.placeStone(position.x, position.y, this);
+            float score = miniMax(false, board, currentDepth, alpha, beta);
+            board.placeStone(position.x, position.y, null);
 
             if (score >= bestScore) {
                 if(score == bestScore) {
@@ -82,15 +81,13 @@ public class Computer extends Player {
                 bestScore = score;
             }
 
-            alpha = Math.max(alpha, bestScore);
-            if(beta<alpha) break;
+            alpha = Math.max(alpha, score);
+            //if(beta<alpha) break;
 
         }
 
-        int n = random.nextInt(bestMoves.size());
-        board.placeStone(bestMoves.get(n).x, bestMoves.get(n).y, this);
-
         if(currentDepth == maxDepth-1) {
+            int n = random.nextInt(bestMoves.size());
             return bestMoves.get(n).x * board.size() + bestMoves.get(n).y;
         } else {
             return bestScore;
@@ -105,38 +102,23 @@ public class Computer extends Player {
      */
     private float getMin (Board board, int currentDepth, float alpha, float beta) {
         float bestScore = Float.MAX_VALUE;
-        List<Board.Place> bestScores = new ArrayList<>();
+        List<Board.Place> emptyCells = getEmptyCellsIndexes(board);
 
-        for (Board.Place position : getEmptyCellsIndexes(board)) {
+        for (Board.Place position : emptyCells) {
 
-            Board modifiedBoard = board.getDeepCopy();
-            modifiedBoard.placeStone(position.x, position.y, opponent);
-
-            float score = miniMax(true, modifiedBoard, currentDepth, alpha, beta);
+            board.placeStone(position.x, position.y, opponent);
+            float score = miniMax(true, board, currentDepth, alpha, beta);
+            board.placeStone(position.x, position.y, null);
 
             if (score <= bestScore) {
-                if(score == bestScore) {
-                    bestScores.add(position);
-                } else {
-                    bestScores.clear();
-                    bestScores.add(position);
-                    }
                 bestScore = score;
             }
 
-            beta = Math.min(beta, bestScore);
-            if(beta<alpha) break;
-
+            beta = Math.min(beta, score);
+            //if(beta<alpha) break;
         }
 
-        int n = random.nextInt(bestScores.size());
-        board.placeStone(bestScores.get(n).x, bestScores.get(n).y, opponent);
-
-        if(currentDepth == maxDepth) {
-            return bestScores.get(n).x * board.size() + bestScores.get(n).y;
-        } else {
-            return bestScore;
-        }
+        return bestScore;
     }
 
     /**
