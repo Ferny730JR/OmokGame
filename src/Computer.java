@@ -1,9 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Computer extends Player {
     private final Player opponent;
-    private final int maxDepth = 6;
+    private final int maxDepth = 8;
+    private long total_calls = 0;
+    private final Random random = new Random();
 
     /**
      * Constructor
@@ -20,8 +23,10 @@ public class Computer extends Player {
      * @return The computer move.
      */
     public void makeMove(Board board) {
+        total_calls = 0;
         Board currentBoardState = board.getDeepCopy();
         float bestMoveInfo = miniMax(true, currentBoardState, maxDepth);
+        System.out.println(total_calls);
         board.placeStone(((int)(bestMoveInfo))/ board.size(), ((int)(bestMoveInfo))% board.size(), this);
     }
 
@@ -37,6 +42,7 @@ public class Computer extends Player {
     }
 
     private float miniMax(Boolean isMaximizingPlayer, Board board, int currentDepth, float alpha, float beta) {
+        total_calls+=1;
         if (currentDepth-- == 0 || board.isFull() || board.isWonBy(this) || board.isWonBy(opponent)) {
             return score(board);
         }
@@ -57,7 +63,7 @@ public class Computer extends Player {
      */
     private float getMax (Board board, int currentDepth, float alpha, float beta) {
         float bestScore = -Float.MAX_VALUE;
-        Board.Place indexOfBestMove = new Board.Place(0,0);
+        List<Board.Place> bestMoves = new ArrayList<>();
 
         for (Board.Place position : getEmptyCellsIndexes(board)) {
 
@@ -67,18 +73,25 @@ public class Computer extends Player {
             float score = miniMax(false, modifiedBoard, currentDepth, alpha, beta);
 
             if (score >= bestScore) {
+                if(score == bestScore) {
+                    bestMoves.add(position);
+                } else {
+                    bestMoves.clear();
+                    bestMoves.add(position);
+                }
                 bestScore = score;
-                indexOfBestMove = position;
             }
 
             alpha = Math.max(alpha, bestScore);
-            if(beta<=alpha) break;
+            if(beta<alpha) break;
 
         }
 
-        board.placeStone(indexOfBestMove.x, indexOfBestMove.y, this);
+        int n = random.nextInt(bestMoves.size());
+        board.placeStone(bestMoves.get(n).x, bestMoves.get(n).y, this);
+
         if(currentDepth == maxDepth-1) {
-            return indexOfBestMove.x * board.size() + indexOfBestMove.y;
+            return bestMoves.get(n).x * board.size() + bestMoves.get(n).y;
         } else {
             return bestScore;
         }
@@ -86,13 +99,13 @@ public class Computer extends Player {
 
     /**
      * Play the move with the lowest score.
-     * @param board         the Tic Tac Toe board to play on
-     * @param currentDepth    the current depth
-     * @return              the score of the board
+     * @param board         The Omok board to play on
+     * @param currentDepth  The current depth
+     * @return              The score of the board
      */
     private float getMin (Board board, int currentDepth, float alpha, float beta) {
         float bestScore = Float.MAX_VALUE;
-        Board.Place indexOfBestMove = new Board.Place(0,0);
+        List<Board.Place> bestScores = new ArrayList<>();
 
         for (Board.Place position : getEmptyCellsIndexes(board)) {
 
@@ -102,18 +115,25 @@ public class Computer extends Player {
             float score = miniMax(true, modifiedBoard, currentDepth, alpha, beta);
 
             if (score <= bestScore) {
+                if(score == bestScore) {
+                    bestScores.add(position);
+                } else {
+                    bestScores.clear();
+                    bestScores.add(position);
+                    }
                 bestScore = score;
-                indexOfBestMove = position;
             }
 
             beta = Math.min(beta, bestScore);
-            if(beta<=alpha) break;
+            if(beta<alpha) break;
 
         }
 
-        board.placeStone(indexOfBestMove.x, indexOfBestMove.y, opponent);
+        int n = random.nextInt(bestScores.size());
+        board.placeStone(bestScores.get(n).x, bestScores.get(n).y, opponent);
+
         if(currentDepth == maxDepth) {
-            return indexOfBestMove.x * board.size() + indexOfBestMove.y;
+            return bestScores.get(n).x * board.size() + bestScores.get(n).y;
         } else {
             return bestScore;
         }
@@ -121,11 +141,10 @@ public class Computer extends Player {
 
     /**
      * Get the score of the board.
-     * @param player        the play that the AI will identify as
-     * @param board         the Tic Tac Toe board to play on
-     * @return              the score of the board
+     * @param board         The Omok board to play on
+     * @return              the evaluation score of the board
      */
-    private float score (Board board) {
+    private float score(Board board) {
         if (board.isWonBy(this)) {
             return 1f;
         } else if (board.isWonBy(opponent)) {

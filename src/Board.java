@@ -116,14 +116,13 @@ public class Board {
      * a horizontal, vertical, or diagonal direction.
      */
     public boolean isWonBy(Player player) {
-        //Iterable<Place> winner = winningRow();
-        List<Place> winner = nInARow(3,player);
-        if(winner.size()>0) {
+        List<Place> winner = nInARow(5,player);
+        if(!winner.isEmpty()) {
             Place place = winner.get(0);
             return player == board[place.x][place.y];
         }
         return false;
-
+//        Iterable<Place> winner = winningRow();
 //        if(!winner.iterator().hasNext()) {
 //            return false;
 //        }
