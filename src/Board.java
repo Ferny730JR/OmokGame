@@ -120,12 +120,6 @@ public class Board {
             return player == board[place.x][place.y];
         }
         return false;
-//        Iterable<Place> winner = winningRow();
-//        if(!winner.iterator().hasNext()) {
-//            return false;
-//        }
-//        Place place = winner.iterator().next();
-//        return player == board[place.x][place.y];
     }
 
     /** Return the winning row. For those who are not familiar with
@@ -316,8 +310,8 @@ public class Board {
                 if (nInARow.size() == numberOfStones) return nInARow;
             }
         }
-        return nInARow;
 
+        return nInARow;
     }
 
     /**

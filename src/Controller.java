@@ -31,11 +31,11 @@ public class Controller {
             player2 = new Player("player2", 'O');
         } else if(gameType == 2) { // Human vs. Computer
             player1 = new Player("player1", 'X');
-            player2 = new Computer("computer1", 'O');
+            player2 = new Computer("computer1",'O',3);
             ((Computer) player2 ).setOpponent(player1);
         } else {
-            player1 = new Computer("Computer1",'X');
-            player2 = new Computer("Computer2", 'O');
+            player1 = new Computer("Computer1",'X',3);
+            player2 = new Computer("Computer2",'O',3);
             ((Computer) player1).setOpponent(player2);
             ((Computer) player2).setOpponent(player1);
 

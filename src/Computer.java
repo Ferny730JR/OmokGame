@@ -4,15 +4,15 @@ import java.util.Random;
 
 public class Computer extends Player {
     private Player opponent;
-    private final int maxDepth = 3;
-    private long total_calls = 0;
+    private final int maxDepth;
     private final Random random = new Random();
 
     /**
      * Constructor
      */
-    public Computer(String name, char playerPiece) {
+    public Computer(String name, char playerPiece, int maxDepth) {
         super(name,playerPiece);
+        this.maxDepth = maxDepth;
     }
 
     public void setOpponent(Player opponent) {
@@ -25,17 +25,14 @@ public class Computer extends Player {
      *
      */
     public void makeMove(Board board) {
-        total_calls = 0;
-        Board currentBoardState = board.getDeepCopy();
-        float bestMoveInfo = miniMax(true, currentBoardState, maxDepth);
-        //System.out.println(total_calls);
+        float bestMoveInfo = miniMax(true, board.getDeepCopy(), maxDepth);
         board.placeStone(((int)(bestMoveInfo))/ board.size(), ((int)(bestMoveInfo))% board.size(), this);
     }
 
     /**
      * The meat of the algorithm.
      * @param isMaximizingPlayer If the AI is making its turn
-     * @param board         the Tic Tac Toe board to play on
+     * @param board         the Omok board to play on
      * @param currentDepth    the current depth
      * @return              the score of the board
      */
@@ -44,8 +41,6 @@ public class Computer extends Player {
     }
 
     private float miniMax(Boolean isMaximizingPlayer, Board board, int currentDepth, float alpha, float beta) {
-        total_calls+=1;
-
         if (currentDepth == 0 || board.isFull() || board.isWonBy(this) || board.isWonBy(opponent)) {
             return score(board);
         }
@@ -60,7 +55,7 @@ public class Computer extends Player {
     /**
      * Play the move with the highest score.
      *
-     * @param board      the Tic Tac Toe board to play on
+     * @param board      the board to play on
      * @param currentDepth the current depth
      * @return the score of the board
      */
@@ -87,7 +82,7 @@ public class Computer extends Player {
 
             alpha = Math.max(alpha,score);
 
-            if(beta<alpha) { // change to <= to improve performance, keep it as < so AI has variety of moves
+            if(beta<=alpha) { // change to <= to improve performance, keep it as < so AI has variety of moves
                 bestScore=1;
                 break;
             }
@@ -122,7 +117,7 @@ public class Computer extends Player {
 
             beta = Math.min(beta,score);
 
-            if(beta<alpha) { // change to <= to improve performance, keep it as < so AI has variety of moves
+            if(beta<=alpha) { // change to <= to improve performance, keep it as < so AI has variety of moves
                 bestScore=-1;
                 break;
             }
@@ -146,6 +141,12 @@ public class Computer extends Player {
         }
     }
 
+    /**
+     *
+     * @param board The Omok board to play on
+     * @return      A {@link Board.Place} list containing the empty positions
+     *              on the board.
+     */
     public List<Board.Place> getEmptyCellsIndexes(Board board) {
         List<Board.Place> availableCellsList = new ArrayList<>();
         for(int row = 0; row<board.size(); row++) {

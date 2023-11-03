@@ -1,5 +1,3 @@
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.Scanner;
 public class ConsoleUI {
     Board board;
@@ -46,14 +44,14 @@ public class ConsoleUI {
      * 2 is human vs. computer
      */
     public int selectGameMode() {
-        displayMessage("Enter 1 to play against human, or 2 to play against computer: ");
+        displayMessage("Enter 1 to play against human, 2 to play against computer, or 3 for computer vs computer: ");
 
         int userInput=0;
         while(userInput != 1 && userInput !=2 && userInput !=3) {
             try {
                 userInput = scanner.nextInt();
 
-                if (userInput == 1 || userInput == 2) {
+                if (userInput == 1 || userInput == 2 || userInput == 3) {
                     System.out.println("You entered: " + userInput);
                 } else {
                     System.out.print("Enter 1 or 2: ");
