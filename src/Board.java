@@ -1,8 +1,6 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Abstraction of an Omok board, which consists of n x n intersections
@@ -215,8 +213,8 @@ public class Board {
      * Return the number of stone in a row the player has
      * on the board.
      *
-     * @param numberOfStones - number of consecutive stone
-     * @param player - the player to check their moves
+     * @param numberOfStones Number of consecutive stone.
+     * @param player         The player to check their moves.
      *
      * @return A Place iterable containing the moves of numberOfStones consecutive
      * moves in a row.
@@ -281,7 +279,7 @@ public class Board {
             }
         }
 
-        // Check diagonals // HOLY MOLY HOW DOES THIS (NOTT???) WORK???
+        // Check diagonals
         for(int row = 0; row<=size-numberOfStones; row++) {
             for(int col = 0; col<=size-numberOfStones; col++) {
                 nInARow.add(new Place(row+numberOfStones-1, col));
@@ -330,9 +328,7 @@ public class Board {
         Board newBoard = new Board(size);
 
         for(int row = 0; row < newBoard.size(); row++) {
-            for(int col = 0; col < newBoard.size(); col++) {
-                newBoard.board[row][col] = this.board[row][col];
-            }
+            if (newBoard.size() >= 0) System.arraycopy(this.board[row], 0, newBoard.board[row], 0, newBoard.size());
         }
 
         return newBoard;
@@ -351,6 +347,8 @@ public class Board {
 
         /** 0-based row index of this place. */
         public final int y;
+
+        public float score = -999;
 
         /** Create a new place of the given indices.
          *

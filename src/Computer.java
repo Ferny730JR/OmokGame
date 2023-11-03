@@ -3,16 +3,19 @@ import java.util.List;
 import java.util.Random;
 
 public class Computer extends Player {
-    private final Player opponent;
-    private final int maxDepth = 20;
+    private Player opponent;
+    private final int maxDepth = 3;
     private long total_calls = 0;
     private final Random random = new Random();
 
     /**
      * Constructor
      */
-    public Computer(String name, char playerPiece, Player opponent) {
+    public Computer(String name, char playerPiece) {
         super(name,playerPiece);
+    }
+
+    public void setOpponent(Player opponent) {
         this.opponent = opponent;
     }
 
@@ -25,7 +28,7 @@ public class Computer extends Player {
         total_calls = 0;
         Board currentBoardState = board.getDeepCopy();
         float bestMoveInfo = miniMax(true, currentBoardState, maxDepth);
-        System.out.println(total_calls);
+        //System.out.println(total_calls);
         board.placeStone(((int)(bestMoveInfo))/ board.size(), ((int)(bestMoveInfo))% board.size(), this);
     }
 
@@ -37,12 +40,13 @@ public class Computer extends Player {
      * @return              the score of the board
      */
     private float miniMax(Boolean isMaximizingPlayer, Board board, int currentDepth) {
-        return miniMax(isMaximizingPlayer, board, currentDepth, -Float.MAX_VALUE, Float.MAX_VALUE);
+        return miniMax(isMaximizingPlayer, board, currentDepth, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
     }
 
     private float miniMax(Boolean isMaximizingPlayer, Board board, int currentDepth, float alpha, float beta) {
         total_calls+=1;
-        if (currentDepth-- == 0 || board.isFull() || board.isWonBy(this) || board.isWonBy(opponent)) {
+
+        if (currentDepth == 0 || board.isFull() || board.isWonBy(this) || board.isWonBy(opponent)) {
             return score(board);
         }
 
@@ -68,7 +72,7 @@ public class Computer extends Player {
         for (Board.Place position : emptyCells) {
 
             board.placeStone(position.x, position.y, this);
-            float score = miniMax(false, board, currentDepth, alpha, beta);
+            float score = miniMax(false, board, currentDepth-1, alpha, beta);
             board.placeStone(position.x, position.y, null);
 
             if (score >= bestScore) {
@@ -81,14 +85,18 @@ public class Computer extends Player {
                 bestScore = score;
             }
 
-            alpha = Math.max(alpha, score);
-            //if(beta<alpha) break;
+            alpha = Math.max(alpha,score);
+
+            if(beta<alpha) { // change to <= to improve performance, keep it as < so AI has variety of moves
+                bestScore=1;
+                break;
+            }
 
         }
 
-        if(currentDepth == maxDepth-1) {
+        if(currentDepth == maxDepth) {
             int n = random.nextInt(bestMoves.size());
-            return bestMoves.get(n).x * board.size() + bestMoves.get(n).y;
+            return bestMoves.get(n).x * board.size() + bestMoves.get(n).y; // returns the best move found
         } else {
             return bestScore;
         }
@@ -107,15 +115,17 @@ public class Computer extends Player {
         for (Board.Place position : emptyCells) {
 
             board.placeStone(position.x, position.y, opponent);
-            float score = miniMax(true, board, currentDepth, alpha, beta);
+            float score = miniMax(true, board, currentDepth-1, alpha, beta);
             board.placeStone(position.x, position.y, null);
 
-            if (score <= bestScore) {
-                bestScore = score;
-            }
+            bestScore = Math.min(score, bestScore);
 
-            beta = Math.min(beta, score);
-            //if(beta<alpha) break;
+            beta = Math.min(beta,score);
+
+            if(beta<alpha) { // change to <= to improve performance, keep it as < so AI has variety of moves
+                bestScore=-1;
+                break;
+            }
         }
 
         return bestScore;
@@ -131,17 +141,16 @@ public class Computer extends Player {
             return 1f;
         } else if (board.isWonBy(opponent)) {
             return -1f;
-        } else if (board.isFull()) {
+        } else {
             return 0f;
         }
-        return 0f;
     }
 
     public List<Board.Place> getEmptyCellsIndexes(Board board) {
         List<Board.Place> availableCellsList = new ArrayList<>();
         for(int row = 0; row<board.size(); row++) {
             for(int col = 0; col<board.size(); col++) {
-                if(board.board[row][col] == null) availableCellsList.add(new Board.Place(row,col));
+                if(board.isEmpty(row,col)) availableCellsList.add(new Board.Place(row,col));
             }
         }
         return availableCellsList;

@@ -49,7 +49,7 @@ public class ConsoleUI {
         displayMessage("Enter 1 to play against human, or 2 to play against computer: ");
 
         int userInput=0;
-        while(userInput != 1 && userInput !=2 ) {
+        while(userInput != 1 && userInput !=2 && userInput !=3) {
             try {
                 userInput = scanner.nextInt();
 

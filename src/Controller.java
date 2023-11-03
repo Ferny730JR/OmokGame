@@ -21,7 +21,7 @@ public class Controller {
 
     public void init() {
         // Creates game, board, and Console UI
-        board = new Board(5);
+        board = new Board(15);
         omokConsole = new ConsoleUI(board);
 
         // Set the game type
@@ -29,9 +29,16 @@ public class Controller {
         if(gameType == 1) { // Human vs. Human
             player1 = new Player("player1", 'X');
             player2 = new Player("player2", 'O');
-        } else { // Human vs. Computer
+        } else if(gameType == 2) { // Human vs. Computer
             player1 = new Player("player1", 'X');
-            player2 = new Computer("computer1", 'O', board, player1);
+            player2 = new Computer("computer1", 'O');
+            ((Computer) player2 ).setOpponent(player1);
+        } else {
+            player1 = new Computer("Computer1",'X');
+            player2 = new Computer("Computer2", 'O');
+            ((Computer) player1).setOpponent(player2);
+            ((Computer) player2).setOpponent(player1);
+
         }
         game = new Game(board, new ArrayList<>(Arrays.asList(player1, player2)));
 
@@ -62,6 +69,9 @@ public class Controller {
             omokConsole.displayBoard(board);
             omokConsole.displayMessage(currentPlayer.getName() + " has won the game!");
         }
+
+        board.clear();
+        startGame();
     }
 
     public void gameTurn(Player currentPlayer) {
