@@ -1,3 +1,5 @@
+package omok;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +25,13 @@ public class Board {
     public Board(int size) throws NegativeArraySizeException {
         this.size = size;
         this.board = new Player[this.size][this.size];
+    }
+
+    /**
+     * Returns the board
+     */
+    public Player[][] getBoard() {
+        return board;
     }
 
     /** Return the size of this board. */
@@ -57,7 +66,7 @@ public class Board {
      *
      * @param x 0-based column (vertical) index
      * @param y 0-based row (horizontal) index
-     * @param player Player whose stone is to be placed
+     * @param player omok.Player whose stone is to be placed
      */
     public void placeStone(int x, int y, Player player) throws ArrayIndexOutOfBoundsException {
         board[x][y] = player;

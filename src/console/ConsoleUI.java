@@ -1,10 +1,13 @@
+package console;
+
+import omok.*;
 import java.util.Scanner;
 public class ConsoleUI {
     Board board;
     Scanner scanner = new Scanner(System.in);
 
     /**
-     * Create a new ConsoleUI with the specified board
+     * Create a new console.ConsoleUI with the specified board
      *
      */
     public ConsoleUI(Board board) {
@@ -19,13 +22,13 @@ public class ConsoleUI {
         System.out.println("\033[H\033[2J");
 
         // Print Top row
-        printTopRow(board.board);
+        printTopRow(board.getBoard());
 
         // Print board
-        printBoard(board.board);
+        printBoard(board.getBoard());
 
         // Print bottom row
-        printBottomRow(board.board);
+        printBottomRow(board.getBoard());
     }
 
     /**
@@ -96,7 +99,7 @@ public class ConsoleUI {
             if(i<(board.length*3)/2-3 || i>(board.length*3)/2+3) {
                 top_row.append(" ");
             } else if(i == (board.length*3)/2) {
-                top_row.append("Omok Game");
+                top_row.append("Omok omok.Game");
             }
         }
         underlineText(top_row.toString());

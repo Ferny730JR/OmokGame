@@ -1,7 +1,9 @@
+package omok;
+
 /**
  * A player in an Omok game. It holds the name of the player and
  * can be used to identify a specific player throughout the game.
- * The Player class helps to keep track of the moves made by each
+ * The omok.Player class helps to keep track of the moves made by each
  * player during the game.
  */
 public class Player {

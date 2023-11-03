@@ -1,3 +1,8 @@
+package omok;
+
+import omok.Board;
+import omok.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
