@@ -13,6 +13,8 @@ import java.util.List;
  * bottom-right intersection is represented by the indices (n-1, n-1).
  */
 public class Board {
+
+    private static Board boardInstance;
     Player[][] board;
     private final int size;
 
@@ -25,6 +27,13 @@ public class Board {
     public Board(int size) throws NegativeArraySizeException {
         this.size = size;
         this.board = new Player[this.size][this.size];
+    }
+
+    public static Board getBoardInstance() {
+        if (boardInstance == null) {
+            boardInstance = new Board();
+        }
+        return boardInstance;
     }
 
     /**
