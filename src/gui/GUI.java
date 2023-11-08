@@ -11,7 +11,6 @@ public class GUI {
 
     Board board;
     private JButton[][] omokBoardButtons;
-    private BoardPanel omokBoard;
     public GUI() {
         board = new Board();
 
@@ -35,31 +34,8 @@ public class GUI {
 
     public JPanel getOmokBoardGUI() {
         omokBoardButtons = new JButton[board.size()][board.size()];
-        omokBoard = new BoardPanel();
+        BoardPanel omokBoard = new BoardPanel();
         omokBoard.initializeGUI();
-
-        //omokBoard.setPreferredSize(new Dimension(100,100));
-//        for(int row = 0; row < omokBoardButtons.length; row++) {
-//            for(int col = 0; col < omokBoardButtons[row].length; col++) {
-//                JButton b = new JButton("");
-//                b.setMargin(new Insets(0,0,0,0));
-//                ImageIcon icon = new ImageIcon(
-//                        new BufferedImage(omokBoard.getButtonSpace()+1,omokBoard.getButtonSpace()+1, BufferedImage.TYPE_INT_ARGB));
-//                b.setIcon(icon);
-//                if(col%2==0 && row%2==0 || col%2==1 && row%2==1) {
-//                    b.setBackground(Color.BLACK);
-//                } else {
-//                    b.setBackground(Color.WHITE);
-//                }
-//                omokBoardButtons[row][col] = b;
-//
-//                //omokBoard.add(omokBoardButtons[row][col]);
-//
-//                omokBoardButtons[row][col] = new JButton("");
-//                omokBoardButtons[row][col].setBorder( new LineBorder(Color.BLACK));
-//                omokBoard.add(omokBoardButtons[row][col]);
-//            }
-//        }
         return omokBoard;
     }
 }

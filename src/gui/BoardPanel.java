@@ -80,33 +80,6 @@ public class BoardPanel extends JPanel {
     }
 
     /**
-     * Draws the board for the BoardPanel using the dimension of the panel.
-     *
-     * @param g the <code>Graphics</code> object to protect
-     * @see JComponent#paintComponent(Graphics)
-     */
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        buttonSpace = updateButtonSpace();
-        int offset = buttonSpace;
-
-        g.setColor(new Color(74, 222, 222));
-        ((Graphics2D) g).setStroke(new BasicStroke(buttonSpace/(dimOfButtons/2)));
-        //g.fillRoundRect(0,0,buttonSpace*dimOfButtons,buttonSpace*dimOfButtons,buttonSpace,buttonSpace);
-        //g.setColor(new Color(60, 166, 166));
-        //g.drawRoundRect(0,0,buttonSpace*dimOfButtons,buttonSpace*dimOfButtons,buttonSpace,buttonSpace);
-
-        ((Graphics2D) g).setStroke(new BasicStroke(buttonSpace/dimOfButtons));
-        g.setColor(new Color(121, 126, 246, 128));
-        for(int row=0; row<positions.length; row++) {
-            //g.drawLine(offset, buttonSpace*row+offset, buttonSpace*(dimOfButtons -1), buttonSpace*row+offset);
-            //g.drawLine(buttonSpace*row+offset,offset,buttonSpace*row+offset,buttonSpace*(dimOfButtons -1));
-        }
-    }
-
-    /**
      * Override the preferred size to return the largest it can, in
      * a square shape.  Must (must, must) be added to a GridBagLayout
      * as the only component (it uses the parent as a guide to size)
