@@ -2,7 +2,9 @@ package gui;
 
 import javax.swing.*;
 import javax.swing.JButton;
+import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class BoardPanel extends JPanel {
     private final JButton[][] positions;
@@ -15,14 +17,66 @@ public class BoardPanel extends JPanel {
     }
 
     public BoardPanel(int boardSize) {
+        setLayout(new GridLayout(boardSize+1,boardSize+1));
+        //setBackground(new Color(255, 0, 0,255));
+        setOpaque(false);
+
         positions = new JButton[boardSize][boardSize];
         boardPanel = new JPanel(new GridLayout(boardSize,boardSize));
         dimOfButtons = boardSize+1; // add two to account for position data
+
+        Thread repainter = getThread();
+        repainter.start();
     }
 
+    private Thread getThread() {
+        Thread repainter = new Thread(() -> {
+            while (true) { // I recommend setting a condition for your panel being open/visible
+                repaint();
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException ignored) {
+                }
+            }
+        });
+        repainter.setName("Panel repaint");
+        repainter.setPriority(Thread.MIN_PRIORITY);
+        return repainter;
+    }
+
+    /**
+     *
+     */
+    public void initializeGUI() {
+
+        setPreferredSize(new Dimension(500,500));
+        //setBackground(new Color(0, 0, 0, 0));
+
+        for(int row = 0; row < positions.length; row++) {
+            for(int col = 0; col < positions[row].length; col++) {
+                JButton b = BoardButton.generateBoardButton();
+                positions[row][col] = b;
+                add(positions[row][col]);
+            }
+        }
+    }
+
+    public JButton[][] getPositions() {
+        return positions;
+    }
+
+    /**
+     * Updates the spacing of buttons based on the dimension of the panel
+     * and the number of buttons.
+     *
+     */
     private int updateButtonSpace() {
         Dimension d = this.getSize();
-        return Math.min(d.width,d.height)/ dimOfButtons;
+        return Math.min(d.width,d.height)/dimOfButtons;
+    }
+
+    public int getButtonSpace() {
+        return buttonSpace;
     }
 
     /**
@@ -32,20 +86,23 @@ public class BoardPanel extends JPanel {
      * @see JComponent#paintComponent(Graphics)
      */
     @Override
-    public void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         buttonSpace = updateButtonSpace();
         int offset = buttonSpace;
 
         g.setColor(new Color(74, 222, 222));
-        ((Graphics2D) g).setStroke(new BasicStroke(buttonSpace/dimOfButtons));
-        g.fillRoundRect(0,0,buttonSpace*dimOfButtons,buttonSpace*dimOfButtons,buttonSpace,buttonSpace);
+        ((Graphics2D) g).setStroke(new BasicStroke(buttonSpace/(dimOfButtons/2)));
+        //g.fillRoundRect(0,0,buttonSpace*dimOfButtons,buttonSpace*dimOfButtons,buttonSpace,buttonSpace);
+        //g.setColor(new Color(60, 166, 166));
+        //g.drawRoundRect(0,0,buttonSpace*dimOfButtons,buttonSpace*dimOfButtons,buttonSpace,buttonSpace);
 
+        ((Graphics2D) g).setStroke(new BasicStroke(buttonSpace/dimOfButtons));
         g.setColor(new Color(121, 126, 246, 128));
         for(int row=0; row<positions.length; row++) {
-            g.drawLine(offset, buttonSpace*row+offset, buttonSpace*(dimOfButtons -1), buttonSpace*row+offset);
-            g.drawLine(buttonSpace*row+offset,offset,buttonSpace*row+offset,buttonSpace*(dimOfButtons -1));
+            //g.drawLine(offset, buttonSpace*row+offset, buttonSpace*(dimOfButtons -1), buttonSpace*row+offset);
+            //g.drawLine(buttonSpace*row+offset,offset,buttonSpace*row+offset,buttonSpace*(dimOfButtons -1));
         }
     }
 
@@ -68,10 +125,10 @@ public class BoardPanel extends JPanel {
         } else {
             prefSize = d;
         }
-        int w = (int) prefSize.getWidth();
-        int h = (int) prefSize.getHeight();
+        int width = (int) prefSize.getWidth();
+        int height = (int) prefSize.getHeight();
         // the smaller of the two sizes
-        int s = Math.min(w, h);
+        int s = Math.min(width, height);
         return new Dimension(s,s);
     }
 }
