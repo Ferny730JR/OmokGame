@@ -3,6 +3,7 @@ package omok;
 import omok.Board;
 import omok.Player;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -17,6 +18,11 @@ public class Computer extends Player {
      */
     public Computer(String name, char playerPiece, int maxDepth) {
         super(name,playerPiece);
+        this.maxDepth = maxDepth;
+    }
+
+    public Computer(String name, Color color, int maxDepth) {
+        super(name, color);
         this.maxDepth = maxDepth;
     }
 

@@ -1,5 +1,7 @@
 package omok;
 
+import java.awt.*;
+
 /**
  * A player in an Omok game. It holds the name of the player and
  * can be used to identify a specific player throughout the game.
@@ -14,10 +16,25 @@ public class Player {
     /** Stone of this player. */
     private final char stone;
 
-    /** Create a new player with the given name. */
+    /** Color of this player. */
+    private final Color color;
+
+    /** Create a new player with the given name and ASCII stone.
+     *  Used for creating ConsoleUI players.
+     */
     public Player(String name, char stone) {
         this.name = name;
         this.stone = stone;
+        this.color = Color.GREEN;
+    }
+
+    /** Create a new player with the given name and color.
+     *  Used for creating GUI players.
+     */
+    public Player(String name, Color color) {
+        this.name = name;
+        this.color = color;
+        this.stone = ' ';
     }
 
     /** Return the name of this player. */
@@ -29,4 +46,7 @@ public class Player {
     public char getStone() {
         return stone;
     }
+
+    /** Return the color of this player. */
+    public Color getColor() { return color; }
 }

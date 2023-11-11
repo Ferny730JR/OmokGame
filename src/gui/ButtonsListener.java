@@ -1,12 +1,16 @@
 package gui;
 
+import omok.Board;
+import omok.Player;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Queue;
 
 public class ButtonsListener implements MouseListener {
-    public ButtonsListener() {
-    }
+
+    public ButtonsListener() {}
 
     @Override
     public void mouseClicked(MouseEvent e) {

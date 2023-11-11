@@ -1,47 +1,43 @@
 package gui;
 
 import javax.swing.*;
-import javax.swing.JButton;
-import javax.swing.border.LineBorder;
+
+import omok.Game;
+import omok.Player;
+import omok.Board;
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.util.Queue;
 
 public class BoardPanel extends JPanel {
-    private final JButton[][] positions;
-    private JPanel boardPanel;
-    private int buttonSpace;
-    private final int dimOfButtons;
+    private final Board board;
+    private Game game;
+    private Queue<Player> players;
+    private Color currentColor;
+    private final BoardButton[][] positions;
+    ButtonsListener listener;
 
-    public BoardPanel() {
-        this(15);
-    }
+    public BoardPanel(Board board) { // CHANGE TO SINGLETON METHOD
+        this.board = board;
+        positions = new BoardButton[board.size()][board.size()];
 
-    public BoardPanel(int boardSize) {
-        setLayout(new GridLayout(boardSize+1,boardSize+1));
-        //setBackground(new Color(255, 0, 0,255));
+        setLayout(new GridLayout(board.size(),board.size()));
+        setPreferredSize(new Dimension(500,500));
         setOpaque(false);
-
-        positions = new JButton[boardSize][boardSize];
-        boardPanel = new JPanel(new GridLayout(boardSize,boardSize));
-        dimOfButtons = boardSize+1; // add two to account for position data
 
         Thread repainter = getThread();
         repainter.start();
     }
 
-    private Thread getThread() {
-        Thread repainter = new Thread(() -> {
-            while (true) { // I recommend setting a condition for your panel being open/visible
-                repaint();
-                try {
-                    Thread.sleep(30);
-                } catch (InterruptedException ignored) {
-                }
-            }
-        });
-        repainter.setName("Panel repaint");
-        repainter.setPriority(Thread.MIN_PRIORITY);
-        return repainter;
+    public void setPlayers(Queue<Player> players) {
+        this.players = players;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public Board getBoard() {
+        return board;
     }
 
     /**
@@ -49,39 +45,42 @@ public class BoardPanel extends JPanel {
      */
     public void initializeGUI() {
 
-        setPreferredSize(new Dimension(500,500));
-        //setBackground(new Color(0, 0, 0, 0));
+        listener = new ButtonsListener();
 
         for(int row = 0; row < positions.length; row++) {
             for(int col = 0; col < positions[row].length; col++) {
-                JButton b = BoardButton.generateBoardButton();
+                BoardButton b = BoardButton.generateBoardButton(row,col);
+                b.addMouseListener(listener);
+                b.addActionListener(e -> {
+                    BoardPanel bp = (BoardPanel) b.getParent();
+
+                    Player currentPlayer = players.poll();
+                    b.setStoneColor( currentPlayer.getColor() );
+
+                    Board board = bp.getBoard();
+                    board.placeStone( b.x, b.y, currentPlayer);
+                    if(game.gameOver()) {
+                        JOptionPane.showMessageDialog(bp, currentPlayer.getName() + " has won!");
+                        disableButtons();
+                    }
+                    b.setDraw(3);
+                    players.offer(currentPlayer);
+                });
                 positions[row][col] = b;
                 add(positions[row][col]);
             }
         }
     }
 
-    public JButton[][] getPositions() {
-        return positions;
-    }
-
-    /**
-     * Updates the spacing of buttons based on the dimension of the panel
-     * and the number of buttons.
-     *
-     */
-    private int updateButtonSpace() {
-        Dimension d = this.getSize();
-        return Math.min(d.width,d.height)/dimOfButtons;
-    }
-
-    public int getButtonSpace() {
-        return buttonSpace;
+    private void disableButtons() {
+        for(BoardButton[] row : positions)
+            for(BoardButton button : row)
+                button.setEnabled(false);
     }
 
     /**
      * Override the preferred size to return the largest it can, in
-     * a square shape.  Must (must, must) be added to a GridBagLayout
+     * a SQUARE shape.  Must (must, must) be added to a <Strong>GridBagLayout</Strong>
      * as the only component (it uses the parent as a guide to size)
      * with no GridBagConstaint (so it is centered).
      */
@@ -102,6 +101,28 @@ public class BoardPanel extends JPanel {
         int height = (int) prefSize.getHeight();
         // the smaller of the two sizes
         int s = Math.min(width, height);
-        return new Dimension(s,s);
+        return new Dimension(s-s/8,s-s/8);
+    }
+
+    /**
+     * Creates a low priority thread that calls {@link Component#repaint()}
+     * on the board every 30 milliseconds. This is to fix the board not
+     * refreshing and displaying the most recent changes done (making a
+     * move, mouse hovering over position, etc.).
+     *
+     * @return Low priority thread.
+     */
+    private Thread getThread() {
+        Thread repainter = new Thread( () -> {
+            while (this.isVisible()) { // thread only runs when board is visible
+                repaint();
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        repainter.setName("Panel repaint");
+        repainter.setPriority(Thread.MIN_PRIORITY);
+        return repainter;
     }
 }

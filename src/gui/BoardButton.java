@@ -1,33 +1,32 @@
 package gui;
-import javax.imageio.ImageIO;
+
+import omok.Board;
+
 import javax.swing.*;
 import javax.swing.JButton;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Documented;
 
 public class BoardButton extends JButton {
     private int draw;
-    private ImageIcon icon;
+    public int x;
+    public int y;
+    private Color stoneColor;
 
-    /**
-     * Private constructor.
-     * @param icon
-     */
-    private BoardButton(ImageIcon icon) {
+    private BoardButton(int x, int y) {
         super("");
         draw = 1;
-        this.icon = icon;
+        this.x = x;
+        this.y = y;
     }
 
     public void setDraw(int draw) {
         this.draw = draw;
+    }
+
+    public void setStoneColor(Color stoneColor) {
+        this.stoneColor = stoneColor;
     }
 
     public int getDraw() {
@@ -38,51 +37,43 @@ public class BoardButton extends JButton {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        Graphics2D g2d = (Graphics2D) g;
         Dimension d = this.getSize();
         int strokeSize = d.width/10;
-        ((Graphics2D) g).setStroke(new BasicStroke(strokeSize));
-        g.setColor(new Color(100,100,100));
+        g2d.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2d.setStroke(new BasicStroke(strokeSize));
+        g2d.setColor(new Color(100,100, 100, 255));
 
         switch (this.draw) {
             case 1 -> { // draw default cross section
-                g.drawLine(0, d.height/2, d.width, d.height/2);
-                g.drawLine(d.width/2, 0, d.width/2, d.height);
+                g2d.drawLine(0, d.height/2, d.width, d.height/2);
+                g2d.drawLine(d.width/2, 0, d.width/2, d.height);
             }
             case 2 -> {
-                g.drawOval(strokeSize, strokeSize, d.width - strokeSize * 2, d.height - strokeSize * 2);
+                g2d.setColor(stoneColor);
+                int diameter = Math.min(d.width, d.height) - strokeSize*2;
+                int x_offset = (d.width - diameter)/2;
+                int y_offset = (d.height - diameter)/2;
+                g2d.drawOval(x_offset, y_offset, diameter, diameter);
             }
             case 3 -> {
-                g.drawLine(0, d.height/2, d.width, d.height/2);
-                g.drawLine(d.width/2, 0, d.width/2, d.height);
-                g.setColor(Color.pink);
-                g.fillOval(strokeSize,strokeSize,d.width - strokeSize*2, d.height - strokeSize*2);
-            }
-            case 4 -> { // png stone
-                g.drawLine(0, d.height/2, d.width, d.height/2);
-                g.drawLine(d.width/2, 0, d.width/2, d.height);
-                Image scaledStone = getScaledImage(icon.getImage(), this.getWidth(), this.getHeight());
-                g.drawImage(scaledStone,0,0,null);
+                g2d.drawLine(0, d.height/2, d.width, d.height/2);
+                g2d.drawLine(d.width/2, 0, d.width/2, d.height);
+                g2d.setColor(stoneColor);
+
+                int diameter = Math.min(d.width,d.height) - strokeSize*2;
+                int x_offset = (d.width - diameter)/2;
+                int y_offset = (d.height - diameter)/2;
+                g2d.fillOval(x_offset,y_offset,diameter, diameter);
             }
         }
     }
 
-    private Image getScaledImage(Image srcImg, int w, int h){
-        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = resizedImg.createGraphics();
-
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2.drawImage(srcImg, 0, 0, w, h, null);
-        g2.dispose();
-
-        return resizedImg;
-    }
-
-    public static JButton generateBoardButton() {
-        return generateBoardButton(new ImageIcon("res/stone.png"));
-    }
-
-    public static JButton generateBoardButton(ImageIcon icon) {
-        BoardButton button = new BoardButton(icon);
+    public static BoardButton generateBoardButton(int x, int y) {
+        BoardButton button = new BoardButton(x,y);
         button.setModel(new FixedStateButtonModel());
         button.setOpaque(false);
         button.setMargin(new Insets(0,0,0,0)); // these 3 make button transparent
@@ -91,8 +82,8 @@ public class BoardButton extends JButton {
         button.setFocusPainted(false);
 
 
-        button.addMouseListener( new ButtonsListener());
-        button.addActionListener(e -> button.draw = 4);
+        //button.addMouseListener( new ButtonsListener() );
+        button.addActionListener(e -> button.setEnabled(false));
         return button;
     }
 
