@@ -71,6 +71,7 @@ public class BoardPanel extends JPanel {
                         }
                         JOptionPane.showMessageDialog(bp, currentPlayer.getName() + " has won!");
                         disableButtons();
+                        return;
                     }
                     bp.disableButton(b);
                     players.offer(currentPlayer);

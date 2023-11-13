@@ -4,6 +4,8 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import omok.*;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class GUI extends JFrame {
     int boardSize=15; // default
     Player player1,player2;
     Queue<Player> playerQueue = new LinkedList<>();
-    int gameType; // default player vs. player
+    int gameType=1; // default player vs. player
     int computerDifficulty=2;
 
     // Menu attributes
@@ -107,21 +109,15 @@ public class GUI extends JFrame {
         ButtonGroup group = new ButtonGroup();
         pvp = new JRadioButtonMenuItem("Player vs. Player",true);
         pvp.setMnemonic(KeyEvent.VK_R);
+        pvp.addActionListener(e -> gameType = 1);
         group.add(pvp);
         submenu.add(pvp);
 
         rbMenuItem = new JRadioButtonMenuItem("Computer AI");
         rbMenuItem.setMnemonic(KeyEvent.VK_O);
+        rbMenuItem.addActionListener(e -> gameType = 2);
         group.add(rbMenuItem);
         submenu.add(rbMenuItem);
-
-        submenu.addActionListener(e -> {
-            if(pvp.isSelected()) {
-                gameType = 1;
-            } else if(rbMenuItem.isSelected()) {
-                gameType = 2;
-            }
-        });
 
         submenu.addSeparator();
 
