@@ -1,5 +1,6 @@
 package gui;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import omok.*;
 
 import java.awt.*;
@@ -23,16 +24,17 @@ public class GUI extends JFrame {
     int boardSize=15; // default
     Player player1,player2;
     Queue<Player> playerQueue = new LinkedList<>();
-    int gameType=1; // default player vs. player
+    int gameType; // default player vs. player
     int computerDifficulty=2;
 
     // Menu attributes
     JMenuBar menuBar;
     JMenu menu, submenu;
     JMenuItem menuItem;
-    JRadioButtonMenuItem rbMenuItem;
+    JRadioButtonMenuItem rbMenuItem, pvp;
     JCheckBoxMenuItem cbMenuItem;
     public GUI()  {
+        FlatDarkLaf.setup();
         board = new Board(boardSize);
 
         JFrame frame = new JFrame("Gomoku");
@@ -74,9 +76,15 @@ public class GUI extends JFrame {
 
         player1 = new Player("Bazinga", new Color(25, 187, 156));
         if(gameType == 1) { player2 = new Player("Ahooga", new Color(173, 78, 213)); }
-        else {              player2 = new Computer("Ahooga", new Color(173, 78, 213), computerDifficulty); }
+        else {
+            player2 = new Computer("Ahooga", new Color(173, 78, 213), computerDifficulty);
+            ((Computer)player2).setOpponent(player1);
+        }
         game = new Game(board, new ArrayList<>(Arrays.asList(player1, player2)));
 
+        System.out.printf("gametype: %s\n",gameType);
+        System.out.printf("player1: %s\n",player1.getClass());
+        System.out.printf("player2: %s\n",player2.getClass());
         playerQueue.offer(player1);
         playerQueue.offer(player2);
     }
@@ -97,16 +105,23 @@ public class GUI extends JFrame {
         submenu.setMnemonic(KeyEvent.VK_S);
 
         ButtonGroup group = new ButtonGroup();
-        rbMenuItem = new JRadioButtonMenuItem("Player vs. Player");
-        rbMenuItem.setSelected(true);
-        rbMenuItem.setMnemonic(KeyEvent.VK_R);
-        group.add(rbMenuItem);
-        submenu.add(rbMenuItem);
+        pvp = new JRadioButtonMenuItem("Player vs. Player",true);
+        pvp.setMnemonic(KeyEvent.VK_R);
+        group.add(pvp);
+        submenu.add(pvp);
 
         rbMenuItem = new JRadioButtonMenuItem("Computer AI");
         rbMenuItem.setMnemonic(KeyEvent.VK_O);
         group.add(rbMenuItem);
         submenu.add(rbMenuItem);
+
+        submenu.addActionListener(e -> {
+            if(pvp.isSelected()) {
+                gameType = 1;
+            } else if(rbMenuItem.isSelected()) {
+                gameType = 2;
+            }
+        });
 
         submenu.addSeparator();
 
@@ -123,7 +138,7 @@ public class GUI extends JFrame {
 
         menuItem = new JMenuItem("Create New Game");
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_2, InputEvent.ALT_DOWN_MASK));
+                KeyEvent.VK_1, InputEvent.ALT_DOWN_MASK));
         menuItem.addActionListener(e -> {
             int user_choice = JOptionPane.showConfirmDialog(GUI.this, "Are you sure you want to start a new game?", "New Game!", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
             if (user_choice == 0) { // 0 is yes, 1 is no
@@ -145,36 +160,6 @@ public class GUI extends JFrame {
         menuItem.setMnemonic(KeyEvent.VK_B);
         menu.add(menuItem);
 
-        menuItem = new JMenuItem("Idk Tbh",
-                KeyEvent.VK_T);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_1, InputEvent.ALT_DOWN_MASK));
-        menuItem.getAccessibleContext().setAccessibleDescription(
-                "This doesn't really do anything");
-        menuItem.addActionListener(e -> {
-            JOptionPane.showMessageDialog(GUI.this,"holy moly");
-            JOptionPane.showConfirmDialog(GUI.this, "holy moly");
-        });
-        menu.add(menuItem);
-
-
-        menuItem = new JMenuItem(new ImageIcon(new ImageIcon("res/stone.png").getImage().getScaledInstance(100,100,Image.SCALE_DEFAULT)));
-        menuItem.setMnemonic(KeyEvent.VK_D);
-        menu.add(menuItem);
-
-        //a group of radio button menu items
-        menu.addSeparator();
-        rbMenuItem = new JRadioButtonMenuItem("Player");
-        rbMenuItem.setSelected(true);
-        rbMenuItem.setMnemonic(KeyEvent.VK_R);
-        group.add(rbMenuItem);
-        menu.add(rbMenuItem);
-
-        rbMenuItem = new JRadioButtonMenuItem("Computer AI");
-        rbMenuItem.setMnemonic(KeyEvent.VK_O);
-        group.add(rbMenuItem);
-        menu.add(rbMenuItem);
-
         //a group of check box menu items
         menu.addSeparator();
         cbMenuItem = new JCheckBoxMenuItem("Allow hints");
@@ -186,7 +171,7 @@ public class GUI extends JFrame {
         menu.add(cbMenuItem);
 
         //Build second menu in the menu bar.
-        menu = new JMenu("Another Menu");
+        menu = new JMenu("Settings");
         menu.setMnemonic(KeyEvent.VK_N);
         menu.getAccessibleContext().setAccessibleDescription(
                 "This menu does nothing");
