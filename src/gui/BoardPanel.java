@@ -2,17 +2,18 @@ package gui;
 
 import javax.swing.*;
 
+import omok.Computer;
 import omok.Game;
 import omok.Player;
 import omok.Board;
 import java.awt.*;
+import java.util.List;
 import java.util.Queue;
 
 public class BoardPanel extends JPanel {
     private final Board board;
     private Game game;
     private Queue<Player> players;
-    private Color currentColor;
     private final BoardButton[][] positions;
     ButtonsListener listener;
 
@@ -40,6 +41,8 @@ public class BoardPanel extends JPanel {
         return board;
     }
 
+    public Queue<Player> getPlayers() { return players; }
+
     /**
      *
      */
@@ -56,15 +59,28 @@ public class BoardPanel extends JPanel {
 
                     Player currentPlayer = players.poll();
                     b.setStoneColor( currentPlayer.getColor() );
+                    b.setDraw(3);
 
                     Board board = bp.getBoard();
                     board.placeStone( b.x, b.y, currentPlayer);
+
                     if(game.gameOver()) {
+                        Iterable<Board.Place> winner = board.winningRow();
+                        for(Board.Place place : winner) {
+                            positions[place.x][place.y].setDraw(4);
+                        }
                         JOptionPane.showMessageDialog(bp, currentPlayer.getName() + " has won!");
                         disableButtons();
                     }
-                    b.setDraw(3);
+                    bp.disableButton(b);
                     players.offer(currentPlayer);
+
+                    System.out.println(players.peek().getClass());
+                    if(players.peek().getClass() == Computer.class) {
+                        currentPlayer = players.poll();
+                        bp.computerTurn((Computer) currentPlayer);
+                        players.offer(currentPlayer);
+                    }
                 });
                 positions[row][col] = b;
                 add(positions[row][col]);
@@ -72,10 +88,38 @@ public class BoardPanel extends JPanel {
         }
     }
 
+    public void computerTurn(Computer currentPlayer) {
+        int[] move = currentPlayer.makeMove(board);
+        BoardButton currentButton = positions[move[0]][move[1]];
+        currentButton.setStoneColor(currentPlayer.getColor());
+        currentButton.setDraw(3);
+        disableButton(currentButton);
+        board.placeStone(move[0],move[1],currentPlayer);
+        if(game.gameOver()) {
+            List<Board.Place> winner = board.nInARow(5,currentPlayer);
+            for(Board.Place place : winner) {
+                positions[place.x][place.y].setDraw(4);
+            }
+            JOptionPane.showMessageDialog(this, currentPlayer.getName() + " has won!");
+            disableButtons();
+        }
+
+    }
+
+    private void disableButton(BoardButton button) {
+        button.setModel(new DefaultButtonModel() {
+            @Override
+            public boolean isArmed() { return false; }
+
+            @Override
+            public boolean isPressed() { return false; }
+        });
+    }
+
     private void disableButtons() {
         for(BoardButton[] row : positions)
             for(BoardButton button : row)
-                button.setEnabled(false);
+                disableButton(button);
     }
 
     /**
