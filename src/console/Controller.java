@@ -79,7 +79,8 @@ public class Controller {
 
     public void gameTurn(Player currentPlayer) {
         if(currentPlayer.getClass() == Computer.class) {
-            ((Computer) currentPlayer).makeMove(board);
+            int[] move = ((Computer) currentPlayer).makeMove(board);
+            board.placeStone(move[0],move[1],currentPlayer);
             return;
         }
 
