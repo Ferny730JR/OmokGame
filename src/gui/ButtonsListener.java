@@ -1,6 +1,5 @@
 package gui;
 
-import omok.Board;
 import omok.Player;
 
 import java.awt.*;
@@ -26,16 +25,22 @@ public class ButtonsListener implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        Component c = e.getComponent();
-        if( ((BoardButton) c).getDraw() == 1)
-            ((BoardButton) c).setDraw(2);
+        BoardButton c = (BoardButton) e.getComponent();
+        BoardPanel p = (BoardPanel) c.getParent();
+        if( c.getDraw() == 1) {
+            c.setStoneColor(p.getPlayers().peek().getColor());
+            c.setDraw(2);
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        Component c = e.getComponent();
-        if( ((BoardButton) c).getDraw() == 2)
-            ((BoardButton) c).setDraw(1);
+        BoardButton c = (BoardButton) e.getComponent();
+        BoardPanel parent = (BoardPanel) c.getParent();
+        if( c.getDraw() == 2) {
+            c.setStoneColor(parent.getPlayers().peek().getColor());
+            c.setDraw(1);
+        }
     }
 }
 
