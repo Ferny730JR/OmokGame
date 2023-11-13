@@ -5,11 +5,15 @@ import omok.Board;
 import javax.swing.*;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 
 public class BoardButton extends JButton {
     private int draw;
+    private int radius=0;
     public int x;
     public int y;
     private Color stoneColor;
@@ -22,6 +26,7 @@ public class BoardButton extends JButton {
     }
 
     public void setDraw(int draw) {
+        radius = 0; // reset the button animation when changing state
         this.draw = draw;
     }
 
@@ -65,9 +70,31 @@ public class BoardButton extends JButton {
                 g2d.setColor(stoneColor);
 
                 int diameter = Math.min(d.width,d.height) - strokeSize*2;
-                int x_offset = (d.width - diameter)/2;
-                int y_offset = (d.height - diameter)/2;
-                g2d.fillOval(x_offset,y_offset,diameter, diameter);
+                if(radius < diameter) { radius+=diameter/5; } else { radius = diameter; }
+                int x_offset = (d.width - radius)/2;
+                int y_offset = (d.height - radius)/2;
+
+                g2d.fillOval(x_offset,y_offset,radius, radius);
+            }
+            case 4 -> {
+                Color bkg = new Color(42, 55, 59, 191);
+                g2d.setColor(bkg.brighter());
+                g2d.fillRect(0,0,d.width,d.height);
+
+                g2d.setColor(new Color(100,100, 100, 255));
+                g2d.drawLine(0, d.height/2, d.width, d.height/2);
+                g2d.drawLine(d.width/2, 0, d.width/2, d.height);
+
+                int diameter = Math.min(d.width,d.height) - strokeSize*2;
+                if(radius < diameter) { radius+=diameter/10; } else { radius = diameter; }
+                int x_offset = (d.width - radius)/2;
+                int y_offset = (d.height - radius)/2;
+
+                g2d.setColor(stoneColor);
+                g2d.fillOval((d.width-diameter)/2,(d.height-diameter)/2,diameter,diameter);
+
+                g2d.setColor(stoneColor.darker());
+                g2d.drawOval(x_offset,y_offset,radius,radius);
             }
         }
     }
@@ -81,9 +108,8 @@ public class BoardButton extends JButton {
         button.setBackground(new Color(0,0,0,0));
         button.setFocusPainted(false);
 
-
         //button.addMouseListener( new ButtonsListener() );
-        button.addActionListener(e -> button.setEnabled(false));
+        //button.addActionListener(e -> button.setEnabled(false));
         return button;
     }
 
