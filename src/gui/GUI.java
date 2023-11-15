@@ -27,7 +27,7 @@ public class GUI extends JFrame {
     Player player1,player2;
     Queue<Player> playerQueue = new LinkedList<>();
     int gameType=1; // default player vs. player
-    int computerDifficulty=2;
+    int computerDifficulty=3;
 
     // Menu attributes
     JMenuBar menuBar;
@@ -76,10 +76,10 @@ public class GUI extends JFrame {
         playerQueue.clear();
         board = new Board(boardSize);
 
-        player1 = new Player("Bazinga", new Color(25, 187, 156));
-        if(gameType == 1) { player2 = new Player("Ahooga", new Color(173, 78, 213)); }
+        player1 = new Player("Player1", new Color(25, 187, 156));
+        if(gameType == 1) { player2 = new Player("Player2", new Color(173, 78, 213)); }
         else {
-            player2 = new Computer("Ahooga", new Color(173, 78, 213), computerDifficulty);
+            player2 = new Computer("Player2", new Color(173, 78, 213), computerDifficulty);
             ((Computer)player2).setOpponent(player1);
         }
         game = new Game(board, new ArrayList<>(Arrays.asList(player1, player2)));
