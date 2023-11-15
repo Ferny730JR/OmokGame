@@ -16,9 +16,9 @@ import java.util.List;
 public class Board {
 
     private static Board boardInstance;
-    private List<Place> occupiedPositions;
-    Player[][] board;
+    private final Player[][] board;
     private final int size;
+    private List<Place> occupiedPositions;
 
     /** Create a new board of the default size. */
     public Board() throws NegativeArraySizeException {
@@ -62,6 +62,7 @@ public class Board {
         for(Player[] row : board) {
             Arrays.fill(row, null);
         }
+        occupiedPositions.clear();
     }
 
     /** Return a boolean value indicating whether all the places
@@ -258,7 +259,7 @@ public class Board {
         if(numberOfStones == 1) {
             for(int row=0; row<size; row++) {
                 for(int col=0; col<size; col++) {
-                    if(player==board[row][col]) {
+                    if(player== board[row][col]) {
                         nInARow.add(new Place(row,col));
                         return nInARow;
                     }
