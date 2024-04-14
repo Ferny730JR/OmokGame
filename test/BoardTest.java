@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
+
+import omok.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,14 +23,14 @@ class BoardTest {
     @Test
     void testBoardConstructor1() { // Test default constructor
         assertEquals(15,board.size());
-        assertTrue(Arrays.deepEquals(new Board[15][15],board.board));
+        assertTrue(Arrays.deepEquals(new Board[15][15],board.getBoard()));
     }
 
     @Test
     void testBoardConstructor2() { // Test constructor with parameter
         board = new Board(30);
         assertEquals(30,board.size());
-        assertTrue(Arrays.deepEquals(new Board[30][30],board.board));
+        assertTrue(Arrays.deepEquals(new Board[30][30],board.getBoard()));
     }
     /* Test size() method */
     @Test
@@ -64,7 +65,7 @@ class BoardTest {
     @Test
     void testClear1() {
         board.clear(); // clear on empty board
-        assertTrue(Arrays.deepEquals(new Player[15][15],board.board));
+        assertTrue(Arrays.deepEquals(new Player[15][15],board.getBoard()));
     }
 
     @Test
@@ -73,18 +74,18 @@ class BoardTest {
         board.placeStone(0,0,new Player("",' '));
         // Clear board
         board.clear();
-        assertTrue(Arrays.deepEquals(new Player[15][15],board.board));
+        assertTrue(Arrays.deepEquals(new Player[15][15],board.getBoard()));
     }
 
     @Test
     void testClear3() {
         // board is full
-        for(Player[] row : board.board) {
+        for(Player[] row : board.getBoard()) {
             Arrays.fill(row,player);
         }
         // Clear board
         board.clear();
-        assertTrue(Arrays.deepEquals(new Player[15][15],board.board));
+        assertTrue(Arrays.deepEquals(new Player[15][15],board.getBoard()));
     }
 
     @Test
@@ -92,24 +93,24 @@ class BoardTest {
         board = new Board(1); // full board of size 1
         board.placeStone(0,0,new Player("",' '));
         board.clear(); // Clear board
-        assertTrue(Arrays.deepEquals(new Player[1][1],board.board));
+        assertTrue(Arrays.deepEquals(new Player[1][1],board.getBoard()));
     }
 
     @Test
     void testClear5() {
         // large omok board is full
         board = new Board(10000);
-        for(Player[] row : board.board) {
+        for(Player[] row : board.getBoard()) {
             Arrays.fill(row,player);
         }
         board.clear();
-        assertTrue(Arrays.deepEquals(new Player[10000][10000],board.board));
+        assertTrue(Arrays.deepEquals(new Player[10000][10000],board.getBoard()));
     }
 
     /* Test isFull() */
     @Test
     void testIsFull1() { // board is full
-        for(Player[] row : board.board) {
+        for(Player[] row : board.getBoard()) {
             Arrays.fill(row, player);
         }
         assertTrue(board.isFull());
@@ -122,17 +123,17 @@ class BoardTest {
 
     @Test
     void testIsFull3() { // Only one spot in board is empty
-        for(Player[] row : board.board) {
+        for(Player[] row : board.getBoard()) {
             Arrays.fill(row, player);
         }
-        board.board[14][14]=null;
+        board.getBoard()[14][14]=null;
         assertFalse(board.isFull());
     }
 
     @Test
     void testIsFull4() { // test full board of size 10,000
         board = new Board(10_000);
-        for(Player[] row : board.board) {
+        for(Player[] row : board.getBoard()) {
             Arrays.fill(row, player);
         }
 
@@ -142,10 +143,10 @@ class BoardTest {
     @Test
     void testIsFull5() { // test board of size 10,000 with only one empty spot
         board = new Board(10_000);
-        for(Player[] row : board.board) {
+        for(Player[] row : board.getBoard()) {
             Arrays.fill(row, player);
         }
-        board.board[board.board.length-1][board.board.length-1]=null;
+        board.getBoard()[board.getBoard().length-1][board.getBoard().length-1]=null;
 
         assertFalse(board.isFull());
     }
@@ -156,21 +157,21 @@ class BoardTest {
         int x = 0;
         int y = 0;
         board.placeStone(x,y,player);
-        assertSame(board.board[x][y], player);
+        assertSame(board.getBoard()[x][y], player);
     }
 
     @Test
     void testPlaceStone2() { // player move should be its position in the board
-        int x = board.board.length-1;
-        int y = board.board.length-1;
+        int x = board.getBoard().length-1;
+        int y = board.getBoard().length-1;
         board.placeStone(x,y,player);
-        assertSame(board.board[x][y], player);
+        assertSame(board.getBoard()[x][y], player);
     }
 
     @Test
     void testPlaceStone3() { // throw error if move is out of bounds
-        int x = board.board.length;
-        int y = board.board.length;
+        int x = board.getBoard().length;
+        int y = board.getBoard().length;
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> new Board().placeStone(x,y,player));
     }
 
@@ -222,7 +223,7 @@ class BoardTest {
 
     @Test
     void testIsOccupied3() { // test when origin index is occupied
-        board.board[0][0]=player;
+        board.getBoard()[0][0]=player;
         assertTrue(board.isOccupied(0,0));
     }
 
@@ -230,7 +231,7 @@ class BoardTest {
     void testIsOccupied4() { // test when max index is occupied
         int x = board.size()-1;
         int y = board.size()-1;
-        board.board[x][y]=player;
+        board.getBoard()[x][y]=player;
         assertTrue(board.isOccupied(x,y));
     }
 
@@ -249,27 +250,27 @@ class BoardTest {
 
     @Test
     void isOccupiedBy2() { // test player occupies position
-        board.board[0][0] = player;
+        board.getBoard()[0][0] = player;
         assertTrue(board.isOccupiedBy(0, 0, player));
     }
 
     @Test
     void isOccupiedBy3() { // test when different players occupies position
-        board.board[0][0] = new Player("",' ');
+        board.getBoard()[0][0] = new Player("",' ');
         assertFalse(board.isOccupiedBy(0, 0, player));
     }
 
     @Test
     void isOccupiedBy4() { // test when new same player occupies position
         Player newplayer = new Player("",' ');
-        board.board[0][0] = newplayer;
+        board.getBoard()[0][0] = newplayer;
         assertTrue(board.isOccupiedBy(0, 0, newplayer));
     }
 
     @Test
     void isOccupiedBy5() { // test when new player occupies position of player
         Player newplayer = new Player("",' ');
-        board.board[0][0] = player;
+        board.getBoard()[0][0] = player;
         assertFalse(board.isOccupiedBy(0, 0, newplayer));
     }
 
@@ -281,29 +282,29 @@ class BoardTest {
 
     @Test
     void testPlayerAt2() { // test when player occupies position
-        board.board[0][0] = player;
+        board.getBoard()[0][0] = player;
         assertEquals(player,board.playerAt(0,0));
     }
 
     @Test
     void testPlayerAt3() { // test when new player occupies position
         Player newplayer = new Player("", ' ');
-        board.board[0][0] = newplayer;
+        board.getBoard()[0][0] = newplayer;
         assertEquals(newplayer,board.playerAt(0,0));
     }
 
     @Test
     void testPlayerAt4() { // test when player gets overwritten with new player
         Player newplayer = new Player("",' ');
-        board.board[0][0] = player;
-        board.board[0][0] = newplayer;
+        board.getBoard()[0][0] = player;
+        board.getBoard()[0][0] = newplayer;
         assertEquals(newplayer,board.playerAt(0,0));
     }
 
     /* test isWonBy() */
     @Test
     void testIsWonBy1() { // test when player has won in row direction
-        board.board[0][0] = board.board[0][1] = board.board[0][2] = board.board[0][3] = board.board[0][4] = player;
+        board.getBoard()[0][0] = board.getBoard()[0][1] = board.getBoard()[0][2] = board.getBoard()[0][3] = board.getBoard()[0][4] = player;
         assertTrue(board.isWonBy(player));
     }
 
@@ -311,13 +312,13 @@ class BoardTest {
     void testIsWonBy2() { // test when player has won in reverse row direction
         int x = 0;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x][y-1] = board.board[0][y-2] = board.board[0][y-3] = board.board[0][y-4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x][y-1] = board.getBoard()[0][y-2] = board.getBoard()[0][y-3] = board.getBoard()[0][y-4] = player;
         assertTrue(board.isWonBy(player));
     }
 
     @Test
     void testIsWonBy3() { // test when player has won in diagonal direction
-        board.board[0][0] = board.board[1][1] = board.board[2][2] = board.board[3][3] = board.board[4][4] = player;
+        board.getBoard()[0][0] = board.getBoard()[1][1] = board.getBoard()[2][2] = board.getBoard()[3][3] = board.getBoard()[4][4] = player;
         assertTrue(board.isWonBy(player));
     }
 
@@ -325,7 +326,7 @@ class BoardTest {
     void testIsWonBy4() { // test when player has won in reverse diagonal direction
         int x = board.size()-1;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x-1][y-1] = board.board[x-2][y-2] = board.board[x-3][y-3] = board.board[x-4][y-4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x-1][y-1] = board.getBoard()[x-2][y-2] = board.getBoard()[x-3][y-3] = board.getBoard()[x-4][y-4] = player;
         assertTrue(board.isWonBy(player));
     }
 
@@ -333,7 +334,7 @@ class BoardTest {
     void testIsWonBy5() { // test when player has won in inverted diagonal direction
         int x = board.size()-1;
         int y = 0;
-        board.board[x][y] = board.board[x-1][y+1] = board.board[x-2][y+2] = board.board[x-3][y+3] = board.board[x-4][y+4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x-1][y+1] = board.getBoard()[x-2][y+2] = board.getBoard()[x-3][y+3] = board.getBoard()[x-4][y+4] = player;
         assertTrue(board.isWonBy(player));
     }
 
@@ -341,14 +342,14 @@ class BoardTest {
     void testIsWonBy6() { // test when player has won in reverse inverted diagonal direction
         int x = 0;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x+1][y+-1] = board.board[x+2][y-2] = board.board[x+3][y-3] = board.board[x+4][y-4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x+1][y+-1] = board.getBoard()[x+2][y-2] = board.getBoard()[x+3][y-3] = board.getBoard()[x+4][y-4] = player;
         assertTrue(board.isWonBy(player));
     }
 
     @Test
     void testIsWonBy7() { // test when new player has won in row direction
         Player newplayer = new Player("", ' ');
-        board.board[0][0] = board.board[0][1] = board.board[0][2] = board.board[0][3] = board.board[0][4] = newplayer;
+        board.getBoard()[0][0] = board.getBoard()[0][1] = board.getBoard()[0][2] = board.getBoard()[0][3] = board.getBoard()[0][4] = newplayer;
         assertTrue(board.isWonBy(newplayer));
     }
 
@@ -357,14 +358,14 @@ class BoardTest {
         Player newplayer = new Player("", ' ');
         int x = 0;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x][y-1] = board.board[x][y-2] = board.board[x][y-3] = board.board[x][y-4] = newplayer;
+        board.getBoard()[x][y] = board.getBoard()[x][y-1] = board.getBoard()[x][y-2] = board.getBoard()[x][y-3] = board.getBoard()[x][y-4] = newplayer;
         assertTrue(board.isWonBy(newplayer));
     }
 
     @Test
     void testIsWonBy9() { // test when new player has won in diagonal direction
         Player newplayer = new Player("", ' ');
-        board.board[0][0] = board.board[1][1] = board.board[2][2] = board.board[3][3] = board.board[4][4] = newplayer;
+        board.getBoard()[0][0] = board.getBoard()[1][1] = board.getBoard()[2][2] = board.getBoard()[3][3] = board.getBoard()[4][4] = newplayer;
         assertTrue(board.isWonBy(newplayer));
     }
 
@@ -373,7 +374,7 @@ class BoardTest {
         Player newplayer = new Player("", ' ');
         int x = board.size()-1;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x-1][y-1] = board.board[x-2][y-2] = board.board[x-3][y-3] = board.board[x-4][y-4] = newplayer;
+        board.getBoard()[x][y] = board.getBoard()[x-1][y-1] = board.getBoard()[x-2][y-2] = board.getBoard()[x-3][y-3] = board.getBoard()[x-4][y-4] = newplayer;
         assertTrue(board.isWonBy(newplayer));
     }
 
@@ -382,7 +383,7 @@ class BoardTest {
         Player newplayer = new Player("", ' ');
         int x = board.size()-1;
         int y = 0;
-        board.board[x][y] = board.board[x-1][y+1] = board.board[x-2][y+2] = board.board[x-3][y+3] = board.board[x-4][y+4] = newplayer;
+        board.getBoard()[x][y] = board.getBoard()[x-1][y+1] = board.getBoard()[x-2][y+2] = board.getBoard()[x-3][y+3] = board.getBoard()[x-4][y+4] = newplayer;
         assertTrue(board.isWonBy(newplayer));
     }
 
@@ -391,14 +392,14 @@ class BoardTest {
         Player newplayer = new Player("", ' ');
         int x = 0;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x+1][y+-1] = board.board[x+2][y-2] = board.board[x+3][y-3] = board.board[x+4][y-4] = newplayer;
+        board.getBoard()[x][y] = board.getBoard()[x+1][y+-1] = board.getBoard()[x+2][y-2] = board.getBoard()[x+3][y-3] = board.getBoard()[x+4][y-4] = newplayer;
         assertTrue(board.isWonBy(newplayer));
     }
 
     @Test
     void testIsWonBy13() { // test player when new player has won in row direction
         Player newplayer = new Player("", ' ');
-        board.board[0][0] = board.board[0][1] = board.board[0][2] = board.board[0][3] = board.board[0][4] = newplayer;
+        board.getBoard()[0][0] = board.getBoard()[0][1] = board.getBoard()[0][2] = board.getBoard()[0][3] = board.getBoard()[0][4] = newplayer;
         assertFalse(board.isWonBy(player));
     }
 
@@ -407,14 +408,14 @@ class BoardTest {
         Player newplayer = new Player("", ' ');
         int x = 0;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x][y-1] = board.board[x][y-2] = board.board[x][y-3] = board.board[x][y-4] = newplayer;
+        board.getBoard()[x][y] = board.getBoard()[x][y-1] = board.getBoard()[x][y-2] = board.getBoard()[x][y-3] = board.getBoard()[x][y-4] = newplayer;
         assertFalse(board.isWonBy(player));
     }
 
     @Test
     void testIsWonBy15() { // test player when new player has won in diagonal direction
         Player newplayer = new Player("", ' ');
-        board.board[0][0] = board.board[1][1] = board.board[2][2] = board.board[3][3] = board.board[4][4] = newplayer;
+        board.getBoard()[0][0] = board.getBoard()[1][1] = board.getBoard()[2][2] = board.getBoard()[3][3] = board.getBoard()[4][4] = newplayer;
         assertFalse(board.isWonBy(player));
     }
 
@@ -423,7 +424,7 @@ class BoardTest {
         Player newplayer = new Player("", ' ');
         int x = board.size()-1;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x-1][y-1] = board.board[x-2][y-2] = board.board[x-3][y-3] = board.board[x-4][y-4] = newplayer;
+        board.getBoard()[x][y] = board.getBoard()[x-1][y-1] = board.getBoard()[x-2][y-2] = board.getBoard()[x-3][y-3] = board.getBoard()[x-4][y-4] = newplayer;
         assertFalse(board.isWonBy(player));
     }
 
@@ -432,7 +433,7 @@ class BoardTest {
         Player newplayer = new Player("", ' ');
         int x = board.size()-1;
         int y = 0;
-        board.board[x][y] = board.board[x-1][y+1] = board.board[x-2][y+2] = board.board[x-3][y+3] = board.board[x-4][y+4] = newplayer;
+        board.getBoard()[x][y] = board.getBoard()[x-1][y+1] = board.getBoard()[x-2][y+2] = board.getBoard()[x-3][y+3] = board.getBoard()[x-4][y+4] = newplayer;
         assertFalse(board.isWonBy(player));
     }
 
@@ -441,14 +442,14 @@ class BoardTest {
         Player newplayer = new Player("", ' ');
         int x = 0;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x+1][y+-1] = board.board[x+2][y-2] = board.board[x+3][y-3] = board.board[x+4][y-4] = newplayer;
+        board.getBoard()[x][y] = board.getBoard()[x+1][y+-1] = board.getBoard()[x+2][y-2] = board.getBoard()[x+3][y-3] = board.getBoard()[x+4][y-4] = newplayer;
         assertFalse(board.isWonBy(player));
     }
 
     @Test
     void testIsWonBy19() { // test newplayer when player has won in row direction
         Player newplayer = new Player("", ' ');
-        board.board[0][0] = board.board[0][1] = board.board[0][2] = board.board[0][3] = board.board[0][4] = player;
+        board.getBoard()[0][0] = board.getBoard()[0][1] = board.getBoard()[0][2] = board.getBoard()[0][3] = board.getBoard()[0][4] = player;
         assertFalse(board.isWonBy(newplayer));
     }
 
@@ -457,14 +458,14 @@ class BoardTest {
         Player newplayer = new Player("", ' ');
         int x = 0;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x][y-1] = board.board[0][y-2] = board.board[0][y-3] = board.board[0][y-4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x][y-1] = board.getBoard()[0][y-2] = board.getBoard()[0][y-3] = board.getBoard()[0][y-4] = player;
         assertFalse(board.isWonBy(newplayer));
     }
 
     @Test
     void testIsWonBy21() { // test new player when player has won in diagonal direction
         Player newplayer = new Player("", ' ');
-        board.board[0][0] = board.board[1][1] = board.board[2][2] = board.board[3][3] = board.board[4][4] = player;
+        board.getBoard()[0][0] = board.getBoard()[1][1] = board.getBoard()[2][2] = board.getBoard()[3][3] = board.getBoard()[4][4] = player;
         assertFalse(board.isWonBy(newplayer));
     }
 
@@ -473,7 +474,7 @@ class BoardTest {
         Player newplayer = new Player("", ' ');
         int x = board.size()-1;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x-1][y-1] = board.board[x-2][y-2] = board.board[x-3][y-3] = board.board[x-4][y-4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x-1][y-1] = board.getBoard()[x-2][y-2] = board.getBoard()[x-3][y-3] = board.getBoard()[x-4][y-4] = player;
         assertFalse(board.isWonBy(newplayer));
     }
 
@@ -482,7 +483,7 @@ class BoardTest {
         Player newplayer = new Player("", ' ');
         int x = board.size()-1;
         int y = 0;
-        board.board[x][y] = board.board[x-1][y+1] = board.board[x-2][y+2] = board.board[x-3][y+3] = board.board[x-4][y+4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x-1][y+1] = board.getBoard()[x-2][y+2] = board.getBoard()[x-3][y+3] = board.getBoard()[x-4][y+4] = player;
         assertFalse(board.isWonBy(newplayer));
     }
 
@@ -491,7 +492,7 @@ class BoardTest {
         Player newplayer = new Player("", ' ');
         int x = 0;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x+1][y+-1] = board.board[x+2][y-2] = board.board[x+3][y-3] = board.board[x+4][y-4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x+1][y+-1] = board.getBoard()[x+2][y-2] = board.getBoard()[x+3][y-3] = board.getBoard()[x+4][y-4] = player;
         assertFalse(board.isWonBy(newplayer));
     }
 
@@ -517,7 +518,7 @@ class BoardTest {
         List<Board.Place> winningRow = new ArrayList<>();
         int x = 0;
         int y = 0;
-        board.board[x][y] = board.board[x][y+1] = board.board[x][y+2] = board.board[x][y+3] = board.board[x][y+4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x][y+1] = board.getBoard()[x][y+2] = board.getBoard()[x][y+3] = board.getBoard()[x][y+4] = player;
         winningRow.add(new Board.Place(x,y));
         winningRow.add(new Board.Place(x,y+1));
         winningRow.add(new Board.Place(x,y+2));
@@ -532,7 +533,7 @@ class BoardTest {
         List<Board.Place> winningRow = new ArrayList<>();
         int x = 0;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x][y-1] = board.board[x][y-2] = board.board[x][y-3] = board.board[x][y-4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x][y-1] = board.getBoard()[x][y-2] = board.getBoard()[x][y-3] = board.getBoard()[x][y-4] = player;
         winningRow.add(new Board.Place(x,y-4));
         winningRow.add(new Board.Place(x,y-3));
         winningRow.add(new Board.Place(x,y-2));
@@ -547,7 +548,7 @@ class BoardTest {
         List<Board.Place> winningRow = new ArrayList<>();
         int x = 0;
         int y = 0;
-        board.board[x][y] = board.board[x+1][y] = board.board[x+2][y] = board.board[x+3][y] = board.board[x+4][y] = player;
+        board.getBoard()[x][y] = board.getBoard()[x+1][y] = board.getBoard()[x+2][y] = board.getBoard()[x+3][y] = board.getBoard()[x+4][y] = player;
         winningRow.add(new Board.Place(x,y));
         winningRow.add(new Board.Place(x+1,y));
         winningRow.add(new Board.Place(x+2,y));
@@ -562,7 +563,7 @@ class BoardTest {
         List<Board.Place> winningRow = new ArrayList<>();
         int x = board.size()-1;
         int y = 0;
-        board.board[x][y] = board.board[x-1][y] = board.board[x-2][y] = board.board[x-3][y] = board.board[x-4][y] = player;
+        board.getBoard()[x][y] = board.getBoard()[x-1][y] = board.getBoard()[x-2][y] = board.getBoard()[x-3][y] = board.getBoard()[x-4][y] = player;
         winningRow.add(new Board.Place(x-4,y));
         winningRow.add(new Board.Place(x-3,y));
         winningRow.add(new Board.Place(x-2,y));
@@ -577,7 +578,7 @@ class BoardTest {
         List<Board.Place> winningRow = new ArrayList<>();
         int x = 0;
         int y = 0;
-        board.board[x][y] = board.board[x+1][y+1] = board.board[x+2][y+2] = board.board[x+3][y+3] = board.board[x+4][y+4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x+1][y+1] = board.getBoard()[x+2][y+2] = board.getBoard()[x+3][y+3] = board.getBoard()[x+4][y+4] = player;
         winningRow.add(new Board.Place(x,y));
         winningRow.add(new Board.Place(x+1,y+1));
         winningRow.add(new Board.Place(x+2,y+2));
@@ -592,7 +593,7 @@ class BoardTest {
         List<Board.Place> winningRow = new ArrayList<>();
         int x = board.size()-1;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x-1][y-1] = board.board[x-2][y-2] = board.board[x-3][y-3] = board.board[x-4][y-4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x-1][y-1] = board.getBoard()[x-2][y-2] = board.getBoard()[x-3][y-3] = board.getBoard()[x-4][y-4] = player;
         winningRow.add(new Board.Place(x-4,y-4));
         winningRow.add(new Board.Place(x-3,y-3));
         winningRow.add(new Board.Place(x-2,y-2));
@@ -607,7 +608,7 @@ class BoardTest {
         List<Board.Place> winningRow = new ArrayList<>();
         int x = board.size()-1;
         int y = 0;
-        board.board[x][y] = board.board[x-1][y+1] = board.board[x-2][y+2] = board.board[x-3][y+3] = board.board[x-4][y+4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x-1][y+1] = board.getBoard()[x-2][y+2] = board.getBoard()[x-3][y+3] = board.getBoard()[x-4][y+4] = player;
         winningRow.add(new Board.Place(x,y));
         winningRow.add(new Board.Place(x-1,y+1));
         winningRow.add(new Board.Place(x-2,y+2));
@@ -622,7 +623,7 @@ class BoardTest {
         List<Board.Place> winningRow = new ArrayList<>();
         int x = 0;
         int y = board.size()-1;
-        board.board[x][y] = board.board[x+1][y-1] = board.board[x+2][y-2] = board.board[x+3][y-3] = board.board[x+4][y-4] = player;
+        board.getBoard()[x][y] = board.getBoard()[x+1][y-1] = board.getBoard()[x+2][y-2] = board.getBoard()[x+3][y-3] = board.getBoard()[x+4][y-4] = player;
         winningRow.add(new Board.Place(x+4,y-4));
         winningRow.add(new Board.Place(x+3,y-3));
         winningRow.add(new Board.Place(x+2,y-2));

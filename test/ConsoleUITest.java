@@ -13,19 +13,19 @@ class ConsoleUITest {
     ByteArrayOutputStream result = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(result, true); // true for auto flushing
 
-    Board board = new Board(15);
-    ConsoleUI ui = new ConsoleUI(board, in, out);
+    omok.Board board = new omok.Board(15);
+    console.ConsoleUI ui = new console.ConsoleUI(board, in, out);
 
     @BeforeEach
     void setUp(String testInput) {
         InputStream in = new ByteArrayInputStream(testInput.getBytes());
-        Board board = new Board(15);
-        ConsoleUI ui = new ConsoleUI(board, in, out);
+        omok.Board board = new omok.Board(15);
+        console.ConsoleUI ui = new console.ConsoleUI(board, in, out);
     }
 
     @Test
     void testSelectGameMode1() {
-        assertEquals("1",ui.selectNextMove(new Player(1,"Player1","X")) );
+        assertEquals("1",ui.selectNextMove(new omok.Player(1,"Player1","X")) );
     }
 
      */

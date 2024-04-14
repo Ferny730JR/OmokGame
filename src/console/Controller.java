@@ -1,3 +1,6 @@
+package console;
+
+import omok.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -29,7 +32,7 @@ public class Controller {
         if(gameType == 1) { // Human vs. Human
             player1 = new Player("player1", 'X');
             player2 = new Player("player2", 'O');
-        } else if(gameType == 2) { // Human vs. Computer
+        } else if(gameType == 2) { // Human vs. omok.Computer
             player1 = new Player("player1", 'X');
             player2 = new Computer("computer1",'O',3);
             ((Computer) player2 ).setOpponent(player1);
@@ -76,7 +79,8 @@ public class Controller {
 
     public void gameTurn(Player currentPlayer) {
         if(currentPlayer.getClass() == Computer.class) {
-            ((Computer) currentPlayer).makeMove(board);
+            int[] move = ((Computer) currentPlayer).makeMove(board);
+            board.placeStone(move[0],move[1],currentPlayer);
             return;
         }
 
